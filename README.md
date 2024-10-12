@@ -10,7 +10,7 @@ How do we assemble genomes?
 
 
 # Consignes
- 
+
 Les projets doivent être réalisés par groupes de 3 personnes de la même promo (BEE, CAH ou BMC). Le projet est à rendre avant le lundi 4 novembre 23h59 (autrement dit, le 5 novembre c'est trop tard). Vous avez donc un mois pour le réaliser.
 
 Les sujets sont des chapitres (sélectionnés par nos soins) tirés des livres :
@@ -28,4 +28,3 @@ L'évaluation se fera sur le fichier python rendu dans l'activité "Projet Pytho
 
 La présentation durera 8 minutes maximum et vous présenterez votre travail ensemble. Vous devez toutes et tous savoir répondre aux questions. En particulier, nous poserons des questions sur votre code python et nous choisirons à qui nous posons la question. Organisez-vous pour que tous les membres du groupe comprennent bien le code python.
 
-Icône Devoir
