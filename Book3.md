@@ -74,3 +74,93 @@ Before we ask you to solve the String Reconstruction Problem, let’s consider t
 
 AAT   ATG   GTT   TAA   TGT
 
+
+The most natural way to solve the String Reconstruction Problem is to mimic the solution of the Newspaper Problem and "connect" a pair of k-mers if they overlap in k-1 symbols. For the above example, it is easy to see that the string should start with TAA because there is no 3-mer ending in TA. This implies that the next 3-mer in the string should start with AA. There is only one 3-mer satisfying this condition, AAT:
+
+TAA   AAT
+
+In turn, AAT can only be extended by ATG, which can only be extended by TGT, and so on, leading us to reconstruct TAATGTT:
+
+
+TAA    
+ AAT   
+  ATG  
+   TGT 
+    GTT
+TAATGTT
+
+It looks like we are finished with the String Reconstruction Problem and can let you move on to the next chapter. To be sure, let’s consider an additional 3-mer composition:
+
+AAT  ATG  ATG  ATG  CAT  CCA  GAT  GCC  GGA  GGG  GTT  TAA  TGC  TGG  TGT
+
+STOP and Think: Reconstruct a string with this composition.
+
+If we start again with TAA, then the next 3-mer in the string should start with AA, and there is only one such 3-mer, AAT. In turn, AAT can only be extended by ATG.
+
+
+
+TAA  
+ AAT 
+  ATG
+TAATG
+
+ATG can be extended either by TGC, or TGG, or TGT. Now we must decide which of these 3-mers to choose. Let’s select TGT:
+
+TAA   
+ AAT  
+  ATG 
+   TGT
+TAATGT
+
+After TGT, our only choice is GTT:
+
+TAA   
+ AAT  
+  ATG 
+   TGT
+    GTT
+TAATGTT
+
+Unfortunately, now we are stuck at GTT because no 3-mers in the composition start with TT! We could try to extend TAA to the left, but no 3-mers in the composition end with TA.
+
+You may have found this trap on your own and already discovered how to escape it. Like a good chess player, if you think a few steps ahead, then you would never extend ATG by TGT until reaching the end of the genome. With this thought in mind, let’s take a step back, extending ATG by TGC instead:
+
+TAA   
+ AAT  
+  ATG 
+   TGC
+TAATGC
+
+Continuing the process, we obtain the following assembly:
+
+TAA             
+ AAT            
+  ATG           
+   TGC          
+    GCC         
+     CCA        
+      CAT       
+       ATG      
+        TGG     
+         GGA    
+          GAT   
+           ATG  
+            TGT 
+             GTT
+TAATGCCATGGATGTT
+
+
+Yet this assembly is incorrect because we have only used fourteen of the fifteen 3-mers in the composition (we omitted GGG), making our reconstructed genome one nucleotide too short.
+
+Repeats complicate genome assembly
+The difficulty in assembling this simulated genome arises because ATG is repeated three times in the 3-mer composition, which causes us to have the three choices TGG, TGC, and TGT by which to extend ATG. Repeated substrings in the genome are not a serious problem when we have just 15 reads, but with millions of reads, repeats make it much more difficult to "look ahead" and construct the correct assembly.
+
+If you followed our discussion of finding the origin of replication in bacterial genomes, you know how unlikely it is to witness a long repeat in a randomly generated sequence of nucleotides. You also know that real genomes are anything but random. Indeed, approximately 50% of the human genome is made up of repeats, e.g., the approximately 300 nucleotide-long Alu sequence is repeated over a million times, with only a few nucleotides inserted/deleted/substituted each time. For more details, see "DETOUR: Repeats in the Human Genome" in the print companion or at Cogniterra.
+
+An analogy illustrating the difficulty of assembling a genome with many repeats is the Triazzle® jigsaw puzzle (shown below). People usually put together jigsaw puzzles by connecting matching pieces. However, every piece in the Triazzle matches more than one other piece; in the Triazzle below, each frog appears several times. If you proceed carelessly, then you will likely match most of the pieces but fail to fit the remaining ones. And yet the Triazzle has only sixteen pieces, which should give us pause about assembling a genome from millions of reads.
+
+STOP and Think: Design a strategy for assembling the Triazzle puzzle.
+
+
+![alt text](images/triazzle.png)
+Figure: Each Triazzle has only sixteen pieces but carries a warning: "It's Harder than it Looks!"
