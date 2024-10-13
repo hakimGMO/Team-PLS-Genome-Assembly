@@ -58,7 +58,8 @@ Input: An integer k and a string Text.
 Output: Compositionk(Text), where the k-mers are arranged in lexicographic order.
 
 **Code Challenge: Solve the String Composition Problem. (Solve at Cogniterra or Rosalind.)
-https://rosalind.info/problems/ba3a/**
+https://rosalind.info/problems/ba3a/
+**
 
 
 Input: An integer k and a string Text.
