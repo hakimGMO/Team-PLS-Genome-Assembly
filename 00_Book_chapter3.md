@@ -238,3 +238,21 @@ Overlap Graph Problem: Construct the overlap graph of a collection of k-mers.
 
 Input: A collection Patterns of k-mers.
 Output: The overlap graph Overlap(Patterns).!
+
+
+Two graph representations
+If you have never worked with graphs before, you may be wondering how to represent graphs in your programs. To make a brief digression from our discussion of genome assembly, consider the graph in the figure below. We can move around this graph’s nodes without changing the graph. As a result, when we are representing a graph computationally, the only information we need to store is the pair of nodes that each edge connects.
+
+There are two standard ways of representing a graph. For a directed graph with n nodes, the n × n adjacency matrix (Ai,j) is defined by the following rule: Ai,j = 1 if a directed edge connects node i to node j, and Ai,j = 0 otherwise. Another (more memory-efficient) way of representing a graph is to use an adjacency list, for which we simply list all nodes connected to each node. See figure below.
+
+![alt text](images/graph_adjmat_adjlist.png)
+Figure: A graph with five nodes and nine edges, followed by its adjacency matrix and adjacency list.
+
+You should now be ready to apply your knowledge to solve the Overlap Graph Problem.
+
+Code Challenge: Solve the Overlap Graph Problem, restated below. (Solve on Cogniterra or Rosalind.)
+
+Input: A collection Patterns of k-mers.
+Output: The overlap graph Overlap(Patterns), in the form of an adjacency list. (You may return the nodes and their edges in any order.)
+
+
