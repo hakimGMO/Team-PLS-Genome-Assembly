@@ -164,3 +164,77 @@ STOP and Think: Design a strategy for assembling the Triazzle puzzle.
 
 ![alt text](images/triazzle.png)
 Figure: Each Triazzle has only sixteen pieces but carries a warning: "It's Harder than it Looks!"
+
+# Lesson 3.3 String Reconstruction as a Walk in the Overlap Graph
+
+## From a string to a graph
+Repeats in a genome necessitate some way of looking ahead to see the correct assembly in advance. Returning to our above example, you may have already found that TAATGCCATGGGATGTT is a solution to the String Reconstruction Problem for the collection of fifteen 3-mers in the last section, as illustrated below. Note that we use a different color for each interval of the string between occurrences of ATG.
+
+![alt text](image.png)
+
+STOP and Think: Is this the only solution to the String Reconstruction Problem for this collection of 3-mers?
+
+In the figure below, consecutive 3-mers in TAATGCCATGGGATGTT are linked together to form this string's genome path.
+![alt text](images/path_graph.png)
+
+
+
+Figure: The fifteen color-coded 3-mers making up TAATGCCATGGGATGTT are joined into the genome path according to their order in the genome.
+
+String Spelled by a Genome Path Problem. Reconstruct a string from its genome path.
+
+Input: A sequence path of k-mers Pattern1, … ,Patternn such that the last k - 1 symbols of Patterni are equal to the first k-1 symbols of Patterni+1 for 1 ≤ i ≤ n-1.
+Output: A string Text of length k+n-1 such that the i-th k-mer in Text is equal to Patterni (for 1 ≤ i ≤ n).
+Reconstructing the genome from its genome path is easy: as we proceed from left to right, the 3-mers “spell’ out TAATGCCATGGGATGTT, adding one new symbol to the genome at each new 3-mer.  This yields a function PathToGenome(﻿path).
+
+Unfortunately, constructing the genome path requires us to know the genome in advance.
+
+Code Challenge: Solve the String Spelled by a Genome Path Problem. (Solve on Cogniterra or Rosalind.)
+
+STOP and Think: Could you construct the genome path if you knew only the genome’s 3-mer composition?
+
+In this chapter, we will use the terms prefix and suffix to refer to the first k − 1 nucleotides and last k − 1 nucleotides of a k-mer, respectively. For example, Prefix(TAA) = TA and Suffix(TAA) = AA. We note that the suffix of a 3-mer in the genome path is equal to the prefix of the following 3-mer in the path. For example, Suffix(TAA) = Prefix(AAT) = AA in the genome path for TAATGCCATGGGATGTT, shown again below.
+
+
+![alt text](<images/path_graph (1).png>)
+
+This observation suggests a method of constructing a string's genome path from its k-mer composition: we will use an arrow to connect any k-mer Pattern to a k-mer Pattern' if the suffix of Pattern is equal to the prefix of Pattern'.
+
+STOP and Think: Apply this rule to the 3-mer composition of TAATGCCATGGGATGTT. Are you able to reconstruct the genome path for TAATGCCATGGGATGTT?
+
+If we strictly follow the rule of connecting two 3-mers with an arrow every time the suffix of one is equal to the prefix of the other, then we will connect all consecutive 3-mers in TAATGCCATGGGATGTT. However, because we don’t know this genome in advance, we wind up having to connect many other pairs of 3-mers as well. For example, each of the three occurrences of ATG should be connected to TGC, TGG, and TGT, as shown in the figure below.
+
+
+![alt text](images/overlap_graph_easy.png)
+Figure: The graph showing all connections between nodes representing the 3-mer composition of TAATGCCATGGGATGTT. This graph has fifteen nodes and 28 edges. Note that the genome can still be spelled out by walking along the horizontal edges from TAA to GTT.
+
+The figure above presents an example of a graph, or a network of nodes connected by edges. This particular graph is an example of a directed graph, whose edges have a direction and are represented by arrows (as opposed to undirected graphs whose edges do not have directions). If you are unfamiliar with graphs, see "DETOUR: An Introduction to Graphs" in the print companion or at Cogniterra.
+
+
+## The genome vanishes
+![alt text](<images/overlap_graph_easy.png>)
+
+The genome can still be traced out in the graph from the previous page (reproduced above) by following the horizontal path from TAA to GTT. But in genome sequencing, we do not know in advance how to correctly order reads. Therefore, we will arrange the 3-mers lexicographically, which produces the overlap graph shown in the figure below. The genome path has disappeared!
+
+
+
+
+![alt text](images/overlap_graph_lex.png)
+Figure: The same graph as the one in the figure at the top of the page, with 3-mers ordered lexicographically. The path through the graph representing the correct assembly is now harder to see.
+
+The genome path may have disappeared to the naked eye, but it must still be there, since we have simply rearranged the nodes of the graph.
+
+Indeed, the figure below highlights the genome path spelling out TAATGCCATGGGATGTT. However, if we had given you this graph to begin with, you would have needed to find a path through the graph visiting each node exactly once; such a path "explains" all the 3-mers in the 3-mer composition of the genome. Although finding such a path is currently just as difficult as trying to assemble the genome by hand, the graph nevertheless gives us a nice way of visualizing the overlap relationships between reads.
+
+![images/overlap_graph_alternate.png](images/overlap_graph_alternate.png)
+
+Figure: The genome path spelling out TAATGCCATGGGATGTT, highlighted in the overlap graph.
+
+STOP and Think: Can any other strings be reconstructed by following a path visiting all the nodes in the figure above?
+
+To generalize the construction of the above graph to an arbitrary collection of k-mers Patterns, we form a node for each k-mer in Patterns and connect k-mers Pattern and Pattern' by a directed edge if Suffix(Pattern) is equal to Prefix(Pattern'). The resulting graph is called the overlap graph on these k-mers, denoted Overlap(Patterns).
+
+Overlap Graph Problem: Construct the overlap graph of a collection of k-mers.
+
+Input: A collection Patterns of k-mers.
+Output: The overlap graph Overlap(Patterns).!
