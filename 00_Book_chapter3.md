@@ -58,7 +58,7 @@ Input: An integer k and a string Text.
 Output: Compositionk(Text), where the k-mers are arranged in lexicographic order.
 
 **Code Challenge: Solve the String Composition Problem. (Solve at Cogniterra or Rosalind.)
-https://rosalind.info/problems/ba3a/
+### https://rosalind.info/problems/ba3a/
 **
 
 
@@ -252,7 +252,110 @@ You should now be ready to apply your knowledge to solve the Overlap Graph Probl
 
 Code Challenge: Solve the Overlap Graph Problem, restated below. (Solve on Cogniterra or Rosalind.)
 
+### https://rosalind.info/problems/ba3c/
+
+
 Input: A collection Patterns of k-mers.
 Output: The overlap graph Overlap(Patterns), in the form of an adjacency list. (You may return the nodes and their edges in any order.)
+
+
+## Hamiltonian paths and universal strings
+
+We now know that to solve the String Reconstruction Problem, we are looking for a path in the overlap graph that visits every node exactly once. A path in a graph visiting every node once is called a Hamiltonian path, in honor of the Irish mathematician William Hamilton. 
+
+For more details, see "DETOUR: The Icosian Game" in the print companion or at Cogniterra.
+
+As the figure below illustrates, a graph may have more than one Hamiltonian path.
+
+![alt text](images/overlap_graph_highlighted.png)
+
+Figure: In addition to the Hamiltonian path that reconstructs TAATGCCATGGGATGTT, another Hamiltonian path in the overlap graph spells the genome TAATGGGATGCCATGTT. These two genomes differ by exchanging the positions of CC and GG but have the same 3-mer composition.
+
+Hamiltonian Path Problem: Construct a Hamiltonian path in a graph.
+
+Input: A directed graph.
+Output: A path visiting every node in the graph exactly once (if such a path exists).
+We do not ask you to solve the Hamiltonian Path Problem yet, since it is not clear how we could design an efficient algorithm for it. Instead, we want you to meet Nicolaas de Bruijn, a Dutch mathematician. In 1946, de Bruijn was interested in solving a purely theoretical problem, described as follows. A binary string is a string composed only of 0’s and 1’s; a binary string is k-universal if it contains every binary k-mer exactly once. For example, 0001110100 is a 3-universal string, as it contains each of the eight binary 3-mers (000, 001, 011, 111, 110, 101, 010, and 100) exactly once.
+
+Finding a k-universal string is equivalent to solving the String Reconstruction Problem when the k-mer composition is the collection of all binary k-mers. Thus, finding a k-universal string can be reduced to finding a Hamiltonian path in the overlap graph formed on all binary k-mers (see the figure below). Although the Hamiltonian path below can easily be found by hand, de Bruijn was interested in constructing k-universal strings for arbitrary values of k. For example, to find a 20-universal string, you would have to consider a graph with over a million nodes. It is absolutely unclear how to find a Hamiltonian path in such a huge graph, or even whether such a path exists!
+
+
+
+![alt text](images/overlap_graph_binary.png)
+
+
+
+Figure: A Hamiltonian path (connecting node 000 to 100) in the overlap graph of all binary 3-mers.
+Instead of searching for Hamiltonian paths in huge graphs, de Bruijn developed a completely different (and somewhat non-intuitive) way of representing a k-mer composition using a graph. Later in this chapter, we will learn how he used this method to construct universal strings.
+
+Exercise Break: Construct a 4-universal string.
+
+
+
+# Lesson 3.4 : Another Graph for String Reconstruction
+
+## Gluing nodes and de Bruijn graphs
+Let’s again represent the genome TAATGCCATGGGATGTT as a sequence of its 3-mers:
+
+TAA   AAT   ATG   TGC   GCC   CCA   CAT   ATG   TGG   GGG   GGA   GAT   ATG   TGT   GTT
+
+This time, instead of assigning these 3-mers to nodes, we will assign them to edges, as shown in the figure below. 
+
+![alt text](images/debruijn_path_graph_unlabeled.png)
+
+Figure: Genome TAATGCCATGGGATGTT represented as a path, with edges (rather than nodes) labeled by 3-mers.
+
+You can once again reconstruct the genome by following this path from left to right, adding one new nucleotide at each step. Since each pair of consecutive edges represents consecutive 3-mers that overlap in two nucleotides, we will label each node of this graph with a 2-mer representing the overlapping nucleotides shared by the edges on either side of the node. For example, the node with incoming edge CAT and outgoing edge ATG is labeled AT.
+
+
+
+![alt text](images/debruijn_path_graph_labeled.png)
+
+Figure: Genome TAATGCCATGGGATGTT represented as a path with edges (rather than nodes) labeled by 3-mers and nodes labeled by 2-mers.
+
+Nothing seems new here until we start gluing identically labeled nodes. In the figure below, we bring the three AT nodes closer and closer to each other until they have been glued into a single node.
+
+
+
+
+![alt text](images/gluing_at.png)
+Figure: Bringing the three nodes labeled AT closer (left) and closer (middle) to each other to eventually glue them into a single node (right). The path with sixteen nodes from the previous step has been transformed into a graph with fourteen nodes.
+
+Note that there are also three nodes labeled by TG, which we bring closer and closer to each other in the figure below until they are glued into a single node.
+
+
+![alt text](images/gluing_tg.png)
+
+
+Figure: Bringing the three nodes labeled TG closer (left) and closer (middle) to each other to eventually glue them into a single node (right). The path with 16 nodes has been transformed into a graph with twelve nodes.
+
+Finally, we glue together the two nodes labeled GG (GG and GG), which produces a special type of edge called a loop connecting GG to itself. The number of nodes in the resulting graph (shown on the right below) has reduced from sixteen to eleven, while the number of edges stayed the same. This graph is called the de Bruijn graph of TAATGCCATGGGATGTT, denoted DeBruijn3( TAATGCCATGGGATGTT). Note that the de Bruijn graph below has three different edges connecting AT to TG (representing three copies of the repeat ATG).
+
+
+![alt text](images/gluing_gg.png)
+
+Figure: Bringing the two nodes labeled GG closer (left) and closer (middle) to each other to eventually glue them into a single node (right). The path with sixteen nodes has been transformed into the graph DeBruijn3(TAATGCCATGGGATGTT), which has eleven nodes.
+
+In general, given a genome Text, PathGraphk(Text) is the path consisting of |Text| - k + 1 edges, where the i-th edge of this path is labeled by the i-th k-mer in Text and the i-th node of the path is labeled by the i-th (k - 1)-mer in Text. The de Bruijn graph DeBruijnk(Text) is formed by gluing identically labeled nodes in PathGraphk(Text).
+
+De Bruijn Graph from a String Problem: Construct the de Bruijn graph of a string.
+
+Input: An integer k and a string Text.
+Output: DeBruijnk(Text).
+Note: To see how gluing affects the adjacency matrix and adjacency list, check out "Charging Station: The Effect of Gluing on the Adjacency Matrix and Adjacency List" in the print companion or at Cogniterra.
+
+Code Challenge: Solve the De Bruijn Graph from a String Problem. (Solve on Cogniterra or Rosalind.)
+
+Input: An integer k and a string Text.
+Output: DeBruijnk(Text), in the form of an adjacency list.
+
+
+STOP and Think: Consider the following questions.
+
+If we gave you the de Bruijn graph DeBruijnk(Text) without giving you Text, could you reconstruct Text?
+Construct the de Bruijn graphs DeBruijn2(TAATGCCATGGGATGTT), DeBruijn3(TAATGCCATGGGATGTT), and DeBruijn4(TAATGCCATGGGATGTT). What do you notice?
+How does the graph DeBruijn3(TAATGCCATGGGATGTT) compare to DeBruijn3(TAATGGGATGCCATGTT)?
+
+### https://rosalind.info/problems/ba3d/
 
 
