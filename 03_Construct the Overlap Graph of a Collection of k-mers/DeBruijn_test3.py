@@ -3,11 +3,13 @@ import matplotlib.pyplot as plt
 
 # parametres rosalind
 
-k1 = 4
+k1 = 3
 k2 = 10
 text1 = "AAGATTCTCTAC"
 text2 = "CTGAAGACCTCTCCACATTACTACGATATAAATCATTTCAGCCTCTAGATACGCCTTGGTGGGTGGGGTTGGCAATTTACGATATGTCCGAATGATTTGACACCAAATACCTTAGCTAGCCCCAAGGAAAATTCTGGGCTTTACGTTGGCCGAGCCACATTACTACAGTAAGGTTAAGCAACCAGCCAGTCGCTCATAAGGACTCCACGCCTCCCGTTACTGACTTCCAACAACAATGTGACAGTAGACTGGAACCTGGGAGGACATTATTGATTCGCCGCGAATCTTCTAAGGTATTTTACCCCCACTGGTCACCTTAACCATTAAGACCTCGAAGTGACACCTAGCCTCTTAACACCCAACTCCACCGACAATACCTATTCGCTGACAAGCGGGACATCCGATCGCCCCTGACTCGAGGTGTCTACCGTCCATCGATTGCTAAACTTTGTTAGGAGTCTAAGCGAACCATGGGAAGGGGGCGGCAGTCAACGTGCTCCTTTAGTGAGGTACCATATTCTTACAGCATGTGGAGCGCAGCAAACTAGCGACCGGGAGTACTCCCACAACCCTGGGTACGTACTGCACTTTTTTCAAGAGCCAGGGTCATTTAAATAGCATCTTTGCTCTTTCTGATAAGGGGGCGACCATCTCCGAATTGAGCCAAACGCTGGTATAAGACTCGTCTCATGACTCCCTAGCCATTTGTATGTTGTCATTTCTGATTTTAGCAGGTAAAACGTAAGGCCTGCTAAAGAATCACGCGGGGAGGCCTTAAATTTCGTCATGGAGCAATCGTCCTAGATTGCTGTGAAGGTTCGTACCAGTAGAGTCTAATGTGCGTAAATGTTAACTGGCCGTATATTCTCTGGTGAGCTGAAACAGAAAGCTGGCAGAAAGCCACTCTTGCTGTTTCGTGTGTACGGACATCGGGATAGTACCAAAAAGCATGTTCTTCATCTGGCGATGCTTGATGTCTACCGTAGACACCTTCATACGT"
-text = text1
+text3 = "TAATGCCATGGGATGTT"
+text4 = "TAATGGGATGCCATGTT"
+text = text4
 k = k1
 
 def path_graph_k(text, k):
@@ -50,14 +52,14 @@ def nx_debruijn(adj_list):
     plt.figure(figsize=(10, 10), dpi=100)
     pos = nx.circular_layout(G)
 
-    nx.draw_networkx_nodes(G, pos, node_color='lightblue', node_size=50, alpha=0.6)
-    nx.draw_networkx_edges(G, pos, edge_color='gray', arrowsize=5, alpha=0.4)
-    nx.draw_networkx_labels(G, pos, font_size=4)
-    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=3)
+    nx.draw_networkx_nodes(G, pos, node_color='lightblue', node_size=500, alpha=0.6)
+    nx.draw_networkx_edges(G, pos, edge_color='gray', arrowsize=15, alpha=0.4)
+    nx.draw_networkx_labels(G, pos, font_size=8)
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=6)
 
     plt.title(f"Graphe de De Bruijn")
     plt.axis('off')
-    plt.savefig('debruijn_graph_text1.png', dpi=300)
+    plt.savefig('debruijn_graph_text4_k=3.png', dpi=300)
     plt.show()
 
 result = debruijn_k(text, k)
@@ -66,5 +68,5 @@ nx_debruijn(result)
 
 for node in sorted(result):
     print(f"{node} -> {','.join(sorted(result[node]))}")
-# for edge in sorted(result):
-        # print(f"{edge} -> {','.join(sorted(result[edge]))}")
+for edge in sorted(result):
+    print(f"{edge} -> {','.join(sorted(result[edge]))}")
