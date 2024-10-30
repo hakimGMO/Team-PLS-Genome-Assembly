@@ -28,12 +28,16 @@ print('->'.join(str(x) for x in cycle))
 
 # Option: visualiser le graphe
 def visualiser_graphe(graphe):
+    pos = nx.circular_layout(graphe)
     G = nx.DiGraph(graphe)
-    pos = nx.circular_layout(G)
-    nx.draw(G, with_labels=True, node_color='lightblue',
-            node_size=500, arrowsize=20)
-    plt.show()
-    # plt.savefig('EulerianCycleInsput1_Nx.png', dpi=300)
+    nx.draw(G, pos, with_labels=True, node_color='lightblue', node_size=500, arrowsize=20)
+    # plt.show()
+    # plt.savefig('EulerianCycle_Nx.png')
+    print("This graph is eulerian: ", nx.is_eulerian(G))
+    print("This graph has eulerian path: ", nx.has_eulerian_path(G))
+    path = list(nx.eulerian_path(G))
+    print(path)
+    # print("Eulerian path:", ' -> '.join(str(node) for node, _ in path + [(path[-1][1], None)]))
 
 
 visualiser_graphe(graphe)
