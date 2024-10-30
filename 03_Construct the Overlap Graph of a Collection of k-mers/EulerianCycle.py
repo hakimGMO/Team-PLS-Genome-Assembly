@@ -7,7 +7,7 @@ EULERIANCYCLE(Graph)
             Cycle ← Cycle’
         return Cycle
 """
-
+# solution via net, trop compliquée
 import random
 # pour faire de la marche aleatoire en choisissant les noeuds de maniere random
 
