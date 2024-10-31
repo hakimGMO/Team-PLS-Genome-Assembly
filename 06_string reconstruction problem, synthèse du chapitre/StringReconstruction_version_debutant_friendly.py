@@ -110,9 +110,17 @@ def reconstruct_string(patterns):
     text = path_to_string(path)
     return text
 
+def read_kmers_from_file(extra_dataset):
+    """
+    Pour parser l'extradataset
+    """
+    with open(extra_dataset, 'r') as file:
+        # lit toutes les lignes et enlève les espaces/retours à la ligne superflus
+        kmers = [line.strip() for line in file if line.strip()]
+    return kmers
 
 # Test avec l'exemple
-kmers = [
+patterns = [
     "CTTA",
     "ACCA",
     "TACC",
@@ -121,7 +129,19 @@ kmers = [
     "TTAC"
 ]
 
+input2 = read_kmers_from_file('extra_dataset')  # Assurez-vous que le fichier est dans le même dossier
+patterns = input2
+result = reconstruct_string(patterns)
+
 # On reconstruit la séquence
-result = reconstruct_string(kmers)
-print(f"K-mers d'entrée : {kmers}")
+result = reconstruct_string(patterns)
+print(f"K-mers d'entrée : {patterns}")
 print(f"Séquence reconstruite : {result}")
+
+# tests stats à partir du script
+from tests_stastistiques_sequence import afficher_statistiques
+
+graph = create_graph(patterns)
+path = find_path(graph)
+text = path_to_string(path)
+afficher_statistiques(patterns, graph, path, result)

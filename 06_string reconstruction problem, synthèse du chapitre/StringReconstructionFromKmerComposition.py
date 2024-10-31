@@ -149,5 +149,13 @@ input2 = read_kmers_from_file('extra_dataset')  # Assurez-vous que le fichier es
 patterns = input2
 result = StringReconstruction(patterns)
 
-print(f"Patterns d'entrée : {patterns}")
-print(f"Séquence reconstruite : {result}")
+print(f"Patterns en input : {patterns}")
+print(f"Séquence en output : {result}")
+
+# tests stats à partir du script
+from tests_stastistiques_sequence import afficher_statistiques
+
+graph = create_graph(patterns)
+path = PathToGenome(graph)
+sequence = reconstruct_string(patterns)
+afficher_statistiques(patterns, graph, path, sequence)
