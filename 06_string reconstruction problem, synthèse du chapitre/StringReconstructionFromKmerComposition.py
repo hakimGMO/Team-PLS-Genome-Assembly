@@ -4,11 +4,11 @@ DeBruijn(Patterns) :
 - Crée le graphe de DeBruijn
 - Retourne la structure du graphe
 
-find_start_node(grap:
+find_start_node(graphe):
 - Calcule les degrés entrants et sortants de chaque nœud
 - Trouve un nœud approprié pour commencer le chemin eulérien
 
-EulerianPath(dB) :
+EulerianPath(graphe) :
 - Prend le graphe en entrée
 - Trouve un chemin qui utilise chaque arête une fois
 - Retourne la liste des nœuds visités
