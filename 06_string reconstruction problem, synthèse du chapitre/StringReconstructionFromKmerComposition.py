@@ -159,3 +159,6 @@ graph = create_graph(patterns)
 path = PathToGenome(graph)
 sequence = reconstruct_string(patterns)
 afficher_statistiques(patterns, graph, path, sequence)
+
+
+# fin :)

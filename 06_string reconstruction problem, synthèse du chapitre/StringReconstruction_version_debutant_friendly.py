@@ -145,3 +145,5 @@ graph = create_graph(patterns)
 path = find_path(graph)
 text = path_to_string(path)
 afficher_statistiques(patterns, graph, path, result)
+
+# fin :)
