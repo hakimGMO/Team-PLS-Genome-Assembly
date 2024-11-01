@@ -1,26 +1,29 @@
-# LIVRE avec les différentes questions
+# Chater 3 : How do we assemble genomes?
 
 ![alt text](images/assembly_cropped.png)
 
 
-# Lesson 3.1 : Exploding Newspapers
+# Lesson 3.1 :
+## Exploding Newspapers
 
 Imagine that we stack a hundred copies of the June 27, 2000 edition of the New York Times on a pile of dynamite, and then we light the fuse. We ask you to further suspend your disbelief and assume that the newspapers are not all incinerated but instead explode cartoonishly into smoldering pieces of confetti. How could we use the tiny snippets of newspaper to figure out what the news was on June 27, 2000? We will call this crazy conundrum the Newspaper Problem.
 
 ![alt text](images/newspaper_blowup.png)
-Figure: Don’t try this at home! Crazy as it may seem, the Newspaper Problem serves as an analogy for the computational framework of genome assembly.
+
+*Figure: Don’t try this at home! Crazy as it may seem, the Newspaper Problem serves as an analogy for the computational framework of genome assembly.*
 
 The Newspaper Problem is even more difficult than it may seem. Because we had multiple copies of the same edition of the newspaper, and because we undoubtedly lost some information in the blast, we cannot simply glue together one of the newspaper copies in the same way that we would assemble a jigsaw puzzle. Instead, we need to use overlapping fragments from different copies of the newspaper to reconstruct the day’s news, as shown in the figure below.
 
 ![alt text](images/overlapping_newspaper.png)
-Figure: In the Newspaper Problem, we need to use overlapping shreds of paper to figure out the news.
+*Figure: In the Newspaper Problem, we need to use overlapping shreds of paper to figure out the news.*
 
 Fine, you ask, but what do exploding newspapers have to do with biology? Determining the order of nucleotides in a genome, or genome sequencing, presents a fundamental task in bioinformatics. Genomes vary in length; your own genome is roughly 3 billion nucleotides long, whereas the genome of Amoeba dubia, an amorphous unicellular organism, is approximately 200 times longer! This unicellular organism competes with the rare Japanese flower Paris japonica for the title of species with the longest genome.
 
 The first sequenced genome, belonging to a φX174 bacterial phage (i.e., a virus that preys on bacteria), had only 5,386 nucleotides and was completed in 1977 by Frederick Sanger. Four decades after this Nobel Prize-winning discovery, genome sequencing has raced to the forefront of bioinformatics research, as the cost of sequencing plummeted. Because of the decreasing cost of sequencing, we now have thousands of sequenced genomes, including those of many mammals (see below).
 
 ![alt text](images/mammals_race.png)
-Figure: The first mammals with sequenced genomes.
+*Figure: The first mammals with sequenced genomes.*
+
 To sequence a genome, we must clear some practical hurdles. The largest obstacle is the fact that biologists still lack the technology to read the nucleotides of a genome from beginning to end in the same way that you would read a book. The best they can do is sequence much shorter DNA fragments called reads. The reasons why researchers can sequence small pieces of DNA but not long genomes warrant their own discussion. For more details, see "DETOUR: A Short History of DNA Sequencing Technologies" in the print companion or at Cogniterra.
 
 In this chapter, however, our aim is to turn an apparent handicap into a useful tool for putting the genome back together.
@@ -31,20 +34,21 @@ The difficulty is that researchers do not know where in the genome these reads c
 
 
 ![alt text](images/sequencing_overview.png)
-Figure: In DNA sequencing, many identical copies of a genome are broken in random locations to generate short reads, which are then sequenced and assembled into the nucleotide sequence of the genome.
+*Figure: In DNA sequencing, many identical copies of a genome are broken in random locations to generate short reads, which are then sequenced and assembled into the nucleotide sequence of the genome.*
 
 Even though researchers have sequenced many genomes, a giant genome like that of Amoeba dubia still remains beyond the reach of modern sequencing technologies. You might guess that the barrier to sequencing such a genome would be experimental, but that is not true; biologists can easily generate enough reads to analyze a large genome, but assembling these reads still presents a major computational challenge.
 
-# Lesson 3.2 : The String Reconstruction Problem
+# Lesson 3.2 : 
+## The String Reconstruction Problem
 
-## Genome assembly is more difficult than you think
+### Genome assembly is more difficult than you think
 Before we introduce a computational problem modeling genome assembly, we will take a moment to discuss a few practical complications that make genome assembly more difficult than the Newspaper Problem.
 
 First, DNA is **double-stranded**, and we have no way of knowing a priori which strand a given read derives from, meaning that we will not know whether to use a read or its reverse complement when assembling a particular strand of a genome. Second, **modern sequencing machines are not perfect**, and the reads that they generate often contain errors. Sequencing errors complicate genome assembly because they prevent us from identifying all overlapping reads. Third, **some regions of the genome may not be covered by any reads**, making it impossible to reconstruct the entire genome.
 
 Since the reads generated by modern sequencers often have the same length, we may safely assume that reads are all k-mers for some value of k. The first part of this chapter will assume an ideal — and unrealistic — situation in which all reads come from the same strand, have no errors, and exhibit perfect coverage, so that every k-mer substring of the genome is generated as a read. Later, we will show how to relax these assumptions for more realistic datasets.
 
-## Reconstructing strings from k-mers
+### Reconstructing strings from k-mers
 
 We are now ready to define a computational problem modeling genome assembly. Given a string Text, its k-mer composition Compositionk(Text) is the collection of all k-mer substrings of Text (including repeated k-mers). For example,
 
@@ -54,16 +58,13 @@ Note that we have listed k-mers in lexicographic order (i.e., how they would app
 
 String Composition Problem: Generate the k-mer composition of a string.
 
-Input: An integer k and a string Text.
-Output: Compositionk(Text), where the k-mers are arranged in lexicographic order.
+- Input: An integer k and a string Text.
+- Output: Compositionk(Text), where the k-mers are arranged in lexicographic order.
 
-**Code Challenge: Solve the String Composition Problem. (Solve at Cogniterra or Rosalind.)
-### https://rosalind.info/problems/ba3a/
-**
+**Code Challenge**: Solve the String Composition Problem. (Solve at Cogniterra or[ Rosalind](https://rosalind.info/problems/ba3a/).)
 
-
-Input: An integer k and a string Text.
-Output: Compositionk(Text).
+- Input: An integer k and a string Text.
+- Output: Compositionk(Text).
 Solving the String Composition Problem is a straightforward exercise, but in order to model genome assembly, we need to solve its inverse problem.
 
 String Reconstruction Problem: Reconstruct a string from its k-mer composition.
@@ -152,7 +153,7 @@ TAATGCCATGGATGTT
 
 Yet this assembly is incorrect because we have only used fourteen of the fifteen 3-mers in the composition (we omitted GGG), making our reconstructed genome one nucleotide too short.
 
-**Repeats complicate genome assembly**
+### **Repeats complicate genome assembly**
 The difficulty in assembling this simulated genome arises because ATG is repeated three times in the 3-mer composition, which causes us to have the three choices TGG, TGC, and TGT by which to extend ATG. Repeated substrings in the genome are not a serious problem when we have just 15 reads, but with millions of reads, repeats make it much more difficult to "look ahead" and construct the correct assembly.
 
 If you followed our discussion of finding the origin of replication in bacterial genomes, you know how unlikely it is to witness a long repeat in a randomly generated sequence of nucleotides. You also know that real genomes are anything but random. Indeed, approximately 50% of the human genome is made up of repeats, e.g., the approximately 300 nucleotide-long Alu sequence is repeated over a million times, with only a few nucleotides inserted/deleted/substituted each time. For more details, see "DETOUR: Repeats in the Human Genome" in the print companion or at Cogniterra.
@@ -163,11 +164,12 @@ STOP and Think: Design a strategy for assembling the Triazzle puzzle.
 
 
 ![alt text](images/triazzle.png)
-Figure: Each Triazzle has only sixteen pieces but carries a warning: "It's Harder than it Looks!"
+*Figure: Each Triazzle has only sixteen pieces but carries a warning: "It's Harder than it Looks!"*
 
-# Lesson 3.3 String Reconstruction as a Walk in the Overlap Graph
+# Lesson 3.3 
+## String Reconstruction as a Walk in the Overlap Graph
 
-## From a string to a graph
+### From a string to a graph
 Repeats in a genome necessitate some way of looking ahead to see the correct assembly in advance. Returning to our above example, you may have already found that TAATGCCATGGGATGTT is a solution to the String Reconstruction Problem for the collection of fifteen 3-mers in the last section, as illustrated below. Note that we use a different color for each interval of the string between occurrences of ATG.
 
 ![alt text](image.png)
@@ -179,7 +181,7 @@ In the figure below, consecutive 3-mers in TAATGCCATGGGATGTT are linked together
 
 
 
-Figure: The fifteen color-coded 3-mers making up TAATGCCATGGGATGTT are joined into the genome path according to their order in the genome.
+*Figure: The fifteen color-coded 3-mers making up TAATGCCATGGGATGTT are joined into the genome path according to their order in the genome.*
 
 String Spelled by a Genome Path Problem. Reconstruct a string from its genome path.
 
@@ -189,7 +191,7 @@ Reconstructing the genome from its genome path is easy: as we proceed from left 
 
 Unfortunately, constructing the genome path requires us to know the genome in advance.
 
-Code Challenge: Solve the String Spelled by a Genome Path Problem. (Solve on Cogniterra or Rosalind.)
+**Code Challenge**: Solve the String Spelled by a Genome Path Problem. (Solve on Cogniterra or [Rosalind](https://rosalind.info/problems/ba3b/).)
 
 STOP and Think: Could you construct the genome path if you knew only the genome’s 3-mer composition?
 
@@ -206,7 +208,7 @@ If we strictly follow the rule of connecting two 3-mers with an arrow every time
 
 
 ![alt text](images/overlap_graph_easy.png)
-Figure: The graph showing all connections between nodes representing the 3-mer composition of TAATGCCATGGGATGTT. This graph has fifteen nodes and 28 edges. Note that the genome can still be spelled out by walking along the horizontal edges from TAA to GTT.
+*Figure: The graph showing all connections between nodes representing the 3-mer composition of TAATGCCATGGGATGTT. This graph has fifteen nodes and 28 edges. Note that the genome can still be spelled out by walking along the horizontal edges from TAA to GTT.*
 
 The figure above presents an example of a graph, or a network of nodes connected by edges. This particular graph is an example of a directed graph, whose edges have a direction and are represented by arrows (as opposed to undirected graphs whose edges do not have directions). If you are unfamiliar with graphs, see "DETOUR: An Introduction to Graphs" in the print companion or at Cogniterra.
 
@@ -220,7 +222,7 @@ The genome can still be traced out in the graph from the previous page (reproduc
 
 
 ![alt text](images/overlap_graph_lex.png)
-Figure: The same graph as the one in the figure at the top of the page, with 3-mers ordered lexicographically. The path through the graph representing the correct assembly is now harder to see.
+*Figure: The same graph as the one in the figure at the top of the page, with 3-mers ordered lexicographically. The path through the graph representing the correct assembly is now harder to see.*
 
 The genome path may have disappeared to the naked eye, but it must still be there, since we have simply rearranged the nodes of the graph.
 
@@ -228,7 +230,7 @@ Indeed, the figure below highlights the genome path spelling out TAATGCCATGGGATG
 
 ![images/overlap_graph_alternate.png](images/overlap_graph_alternate.png)
 
-Figure: The genome path spelling out TAATGCCATGGGATGTT, highlighted in the overlap graph.
+*Figure: The genome path spelling out TAATGCCATGGGATGTT, highlighted in the overlap graph.*
 
 STOP and Think: Can any other strings be reconstructed by following a path visiting all the nodes in the figure above?
 
@@ -246,17 +248,16 @@ If you have never worked with graphs before, you may be wondering how to represe
 There are two standard ways of representing a graph. For a directed graph with n nodes, the n × n adjacency matrix (Ai,j) is defined by the following rule: Ai,j = 1 if a directed edge connects node i to node j, and Ai,j = 0 otherwise. Another (more memory-efficient) way of representing a graph is to use an adjacency list, for which we simply list all nodes connected to each node. See figure below.
 
 ![alt text](images/graph_adjmat_adjlist.png)
-Figure: A graph with five nodes and nine edges, followed by its adjacency matrix and adjacency list.
+*Figure: A graph with five nodes and nine edges, followed by its adjacency matrix and adjacency list.*
 
 You should now be ready to apply your knowledge to solve the Overlap Graph Problem.
 
-Code Challenge: Solve the Overlap Graph Problem, restated below. (Solve on Cogniterra or Rosalind.)
-
-### https://rosalind.info/problems/ba3c/
+**Code Challenge**: Solve the Overlap Graph Problem, restated below. (Solve on Cogniterra or [Rosalind](https://rosalind.info/problems/ba3c/).)
 
 
-Input: A collection Patterns of k-mers.
-Output: The overlap graph Overlap(Patterns), in the form of an adjacency list. (You may return the nodes and their edges in any order.)
+
+- Input: A collection Patterns of k-mers.
+- Output: The overlap graph Overlap(Patterns), in the form of an adjacency list. (You may return the nodes and their edges in any order.)
 
 
 ## Hamiltonian paths and universal strings
@@ -269,7 +270,7 @@ As the figure below illustrates, a graph may have more than one Hamiltonian path
 
 ![alt text](images/overlap_graph_highlighted.png)
 
-Figure: In addition to the Hamiltonian path that reconstructs TAATGCCATGGGATGTT, another Hamiltonian path in the overlap graph spells the genome TAATGGGATGCCATGTT. These two genomes differ by exchanging the positions of CC and GG but have the same 3-mer composition.
+*Figure: In addition to the Hamiltonian path that reconstructs TAATGCCATGGGATGTT, another Hamiltonian path in the overlap graph spells the genome TAATGGGATGCCATGTT. These two genomes differ by exchanging the positions of CC and GG but have the same 3-mer composition.*
 
 Hamiltonian Path Problem: Construct a Hamiltonian path in a graph.
 
@@ -285,7 +286,8 @@ Finding a k-universal string is equivalent to solving the String Reconstruction 
 
 
 
-Figure: A Hamiltonian path (connecting node 000 to 100) in the overlap graph of all binary 3-mers.
+*Figure: A Hamiltonian path (connecting node 000 to 100) in the overlap graph of all binary 3-mers.*
+
 Instead of searching for Hamiltonian paths in huge graphs, de Bruijn developed a completely different (and somewhat non-intuitive) way of representing a k-mer composition using a graph. Later in this chapter, we will learn how he used this method to construct universal strings.
 
 Exercise Break: Construct a 4-universal string.
@@ -301,7 +303,7 @@ This time, instead of assigning these 3-mers to nodes, we will assign them to ed
 
 ![alt text](images/debruijn_path_graph_unlabeled.png)
 
-Figure: Genome TAATGCCATGGGATGTT represented as a path, with edges (rather than nodes) labeled by 3-mers.
+*Figure: Genome TAATGCCATGGGATGTT represented as a path, with edges (rather than nodes) labeled by 3-mers.*
 
 You can once again reconstruct the genome by following this path from left to right, adding one new nucleotide at each step. Since each pair of consecutive edges represents consecutive 3-mers that overlap in two nucleotides, we will label each node of this graph with a 2-mer representing the overlapping nucleotides shared by the edges on either side of the node. For example, the node with incoming edge CAT and outgoing edge ATG is labeled AT.
 
@@ -309,7 +311,7 @@ You can once again reconstruct the genome by following this path from left to ri
 
 ![alt text](images/debruijn_path_graph_labeled.png)
 
-Figure: Genome TAATGCCATGGGATGTT represented as a path with edges (rather than nodes) labeled by 3-mers and nodes labeled by 2-mers.
+*Figure: Genome TAATGCCATGGGATGTT represented as a path with edges (rather than nodes) labeled by 3-mers and nodes labeled by 2-mers.*
 
 Nothing seems new here until we start gluing identically labeled nodes. In the figure below, we bring the three AT nodes closer and closer to each other until they have been glued into a single node.
 
@@ -317,7 +319,7 @@ Nothing seems new here until we start gluing identically labeled nodes. In the f
 
 
 ![alt text](images/gluing_at.png)
-Figure: Bringing the three nodes labeled AT closer (left) and closer (middle) to each other to eventually glue them into a single node (right). The path with sixteen nodes from the previous step has been transformed into a graph with fourteen nodes.
+*Figure: Bringing the three nodes labeled AT closer (left) and closer (middle) to each other to eventually glue them into a single node (right). The path with sixteen nodes from the previous step has been transformed into a graph with fourteen nodes.*
 
 Note that there are also three nodes labeled by TG, which we bring closer and closer to each other in the figure below until they are glued into a single node.
 
@@ -325,27 +327,27 @@ Note that there are also three nodes labeled by TG, which we bring closer and cl
 ![alt text](images/gluing_tg.png)
 
 
-Figure: Bringing the three nodes labeled TG closer (left) and closer (middle) to each other to eventually glue them into a single node (right). The path with 16 nodes has been transformed into a graph with twelve nodes.
+*Figure: Bringing the three nodes labeled TG closer (left) and closer (middle) to each other to eventually glue them into a single node (right). The path with 16 nodes has been transformed into a graph with twelve nodes.*
 
 Finally, we glue together the two nodes labeled GG (GG and GG), which produces a special type of edge called a loop connecting GG to itself. The number of nodes in the resulting graph (shown on the right below) has reduced from sixteen to eleven, while the number of edges stayed the same. This graph is called the de Bruijn graph of TAATGCCATGGGATGTT, denoted DeBruijn3( TAATGCCATGGGATGTT). Note that the de Bruijn graph below has three different edges connecting AT to TG (representing three copies of the repeat ATG).
 
 
 ![alt text](images/gluing_gg.png)
 
-Figure: Bringing the two nodes labeled GG closer (left) and closer (middle) to each other to eventually glue them into a single node (right). The path with sixteen nodes has been transformed into the graph DeBruijn3(TAATGCCATGGGATGTT), which has eleven nodes.
+*Figure: Bringing the two nodes labeled GG closer (left) and closer (middle) to each other to eventually glue them into a single node (right). The path with sixteen nodes has been transformed into the graph DeBruijn3(TAATGCCATGGGATGTT), which has eleven nodes.*
 
 In general, given a genome Text, PathGraphk(Text) is the path consisting of |Text| - k + 1 edges, where the i-th edge of this path is labeled by the i-th k-mer in Text and the i-th node of the path is labeled by the i-th (k - 1)-mer in Text. The de Bruijn graph DeBruijnk(Text) is formed by gluing identically labeled nodes in PathGraphk(Text).
 
 De Bruijn Graph from a String Problem: Construct the de Bruijn graph of a string.
 
-Input: An integer k and a string Text.
-Output: DeBruijnk(Text).
+- Input: An integer k and a string Text.
+- Output: DeBruijnk(Text).
 Note: To see how gluing affects the adjacency matrix and adjacency list, check out "Charging Station: The Effect of Gluing on the Adjacency Matrix and Adjacency List" in the print companion or at Cogniterra.
 
-Code Challenge: Solve the De Bruijn Graph from a String Problem. (Solve on Cogniterra or Rosalind.)
+**Code Challenge**: Solve the De Bruijn Graph from a String Problem. (Solve on Cogniterra or [Rosalind](https://rosalind.info/problems/ba3d/).)
 
-Input: An integer k and a string Text.
-Output: DeBruijnk(Text), in the form of an adjacency list.
+- Input: An integer k and a string Text.
+- Output: DeBruijnk(Text), in the form of an adjacency list.
 
 
 STOP and Think: Consider the following questions.
@@ -353,8 +355,6 @@ STOP and Think: Consider the following questions.
 If we gave you the de Bruijn graph DeBruijnk(Text) without giving you Text, could you reconstruct Text?
 Construct the de Bruijn graphs DeBruijn2(TAATGCCATGGGATGTT), DeBruijn3(TAATGCCATGGGATGTT), and DeBruijn4(TAATGCCATGGGATGTT). What do you notice?
 How does the graph DeBruijn3(TAATGCCATGGGATGTT) compare to DeBruijn3(TAATGGGATGCCATGTT)?
-
-### https://rosalind.info/problems/ba3d/
 
 # Lesson 3.5
 
@@ -422,9 +422,8 @@ DeBruijn Graph from k-mers Problem: Construct the de Bruijn graph from a set of 
 
 Input: A collection of k-mers Patterns.
 Output: The adjacency list of the de Bruijn graph DeBruijn(Patterns).
-Code Challenge:Solve the de Bruijn Graph from k-mers Problem. (Solve at Cogniterra or Rosalind.)
+**Code Challenge**:Solve the de Bruijn Graph from k-mers Problem. (Solve at Cogniterra or [Rosalind](https://rosalind.info/problems/ba3e/).)
 
-## https://rosalind.info/problems/ba3e/
 
 ### De Bruijn graphs versus overlap graphs
 We now have two ways of solving the String Reconstruction Problem. We can either find a Hamiltonian path in the overlap graph (top) or find an Eulerian path in the de Bruijn graph (bottom). Your inner voice may have already started complaining: was it really worth my time to learn two slightly different ways of solving the same problem? After all, we have only changed a single word in the statements of the Hamiltonian and Eulerian Path Problems, from finding a path visiting every node exactly once to finding a path visiting every edge exactly once.
@@ -535,21 +534,22 @@ STOP and Think: Can you formulate and prove an analogue of Euler’s Theorem for
 The proof of Euler’s Theorem offers an example of what mathematicians call a constructive proof, which not only proves the desired result, but also provides us with a method for constructing the object we need. In short, we track Leo’s movements until he inevitably produces an Eulerian cycle in a balanced and strongly connected graph Graph, as summarized in the following pseudocode.
 
 
+```python 
 EulerianCycle(Graph)
-    form a cycle Cycle by randomly walking in Graph (don't visit the same edge twice!)
+    '''form a cycle Cycle by randomly walking in Graph (don't visit the same edge twice!)'''
     while there are unexplored edges in Graph
         select a node newStart in Cycle with still unexplored edges
         form Cycle’ by traversing Cycle (starting at newStart) and then randomly walking
         Cycle ← Cycle’
     return Cycle
-
+```
 You should now be prepared to solve the Eulerian Cycle Problem for any graph. It may not be obvious, but a good implementation of EulerianCycle will work in linear time. To achieve this runtime speedup, you would need to use an efficient data structure in order to maintain the current cycle that Leo is building as well as the list of unused edges incident to each node and the list of nodes on the current cycle that have unused edges.
 
-Code Challenge: Solve the Eulerian Cycle Problem. (Solve at Cogniterra or Rosalind.)
-## https://rosalind.info/problems/ba3f/
+**Code Challenge**: Solve the Eulerian Cycle Problem. (Solve at Cogniterra or [Rosalind](https://rosalind.info/problems/ba3f/).)
 
-     Input: The adjacency list of an Eulerian directed graph.
-     Output: An Eulerian cycle in this graph.
+
+- Input: The adjacency list of an Eulerian directed graph.
+- Output: An Eulerian cycle in this graph.
 
 # From Eulerian cycles to Eulerian paths
 We can now check if a directed graph has an Eulerian cycle, but what about an Eulerian path? Consider the de Bruijn graph on the left in the figure below, which we already know has an Eulerian path, but which does not have an Eulerian cycle because nodes TA and TT are not balanced. However, we can transform this Eulerian path into an Eulerian cycle by adding a single edge connecting TT and TA, as shown in the figure below.
@@ -558,7 +558,7 @@ STOP and Think: How many unbalanced nodes does a graph with an Eulerian path hav
 
 ![alt text](images/Eulerian_path_to_cycle.png)
 
-Figure: Transforming an Eulerian path (left) into an Eulerian cycle (right) by adding an edge.
+*Figure: Transforming an Eulerian path (left) into an Eulerian cycle (right) by adding an edge.*
 
 More generally, consider a graph that does not have an Eulerian cycle but does have an Eulerian path. If an Eulerian path in this graph connects a node v to a different node w, then the graph is nearly balanced, meaning that all its nodes except v and w are balanced. In this case, adding an extra edge from w to v transforms the Eulerian path into an Eulerian cycle. Thus, a nearly balanced graph has an Eulerian path if and only if adding an edge between its unbalanced nodes makes the graph balanced and strongly connected.
 
@@ -567,11 +567,10 @@ STOP and Think: Find an analogue of the nearly balanced condition that will dete
 The analogue of Euler’s theorem for undirected graphs immediately implies that there is no Eulerian path in Königsberg. However, the story is different in modern-day Kaliningrad; for more details, see "DETOUR: The Bridges of Kaliningrad" in the print companion or at Cogniterra.
 
 
-Code Challenge: Solve the Eulerian Path Problem. (Solve at Cogniterra or Rosalind.)
-## https://rosalind.info/problems/ba3g/
+**Code Challenge**: Solve the Eulerian Path Problem. (Solve at Cogniterra or [Rosalind](https://rosalind.info/problems/ba3g/).)
 
-Input: The adjacency list of a directed graph that has an Eulerian path.
-Output: An Eulerian path in this graph.
+- Input: The adjacency list of a directed graph that has an Eulerian path.
+- Output: An Eulerian path in this graph.
 You now have a method to assemble a genome, since the String Reconstruction Problem reduces to finding an Eulerian path in the de Bruijn graph generated from reads.
 
 We can therefore summarize this solution using the following pseudocode, which relies on three problems that we have already solved:
@@ -579,6 +578,7 @@ We can therefore summarize this solution using the following pseudocode, which r
 The de Bruijn Graph Construction Problem;
 The Eulerian Path Problem;
 The String Spelled by a Genome Path Problem.
+
 ```python
     StringReconstruction(Patterns)
         dB ← DeBruijn(Patterns)
@@ -587,11 +587,11 @@ The String Spelled by a Genome Path Problem.
         return Text
 ```
 
-Code Challenge: Solve the String Reconstruction Problem. (Solve at Cogniterra or Rosalind.) 
-## https://rosalind.info/problems/ba3h/
+**Code Challenge**: Solve the String Reconstruction Problem. (Solve at Cogniterra or [Rosalind](https://rosalind.info/problems/ba3h/).) 
 
-Input: An integer k followed by a list of k-mers Patterns.
-Output: A string Text with k-mer composition equal to Patterns. (If multiple answers exist, you may return any one.)
+
+- Input: An integer k followed by a list of k-mers Patterns.
+- Output: A string Text with k-mer composition equal to Patterns. (If multiple answers exist, you may return any one.)
 Constructing universal strings
 Now that you know how to use the de Bruijn graph to solve the String Reconstruction Problem, you can also construct a k-universal string for any value of k.
 
@@ -599,12 +599,12 @@ We should note that de Bruijn was interested in constructing k-universal circula
 
 k-Universal Circular String Problem: Find a k-universal circular string.
 
-Input: An integer k.
-Output: A k-universal circular string.
+- Input: An integer k.
+- Output: A k-universal circular string.
 
 ![alt text](images/k_universal_circular_string.png)
 
-Figure: The circular 3-universal string 00011101 contains each of the binary 3-mers exactly once.
+**Figure: The circular 3-universal string 00011101 contains each of the binary 3-mers exactly once.**
 
 Like its analogue for linear strings, the k-Universal Circular String Problem is just a specific case of a more general problem, which requires us to reconstruct a circular string given its k-mer composition. This problem models the assembly of a circular genome containing a single chromosome, like the genomes of most bacteria. We know that we can reconstruct a circular string from its k-mer composition by finding an Eulerian cycle in the de Bruijn graph constructed from these k-mers. Therefore, we can construct a k-universal circular binary string by finding an Eulerian cycle in the de Bruijn graph constructed from the collection of all binary k-mers (see figure below).
 
@@ -619,13 +619,12 @@ STOP and Think: The figure below illustrates that DeBruijn(BinaryStrings4) is ba
 
 ![alt text](images/4_universal_string.png)
 
-Figure: An Eulerian cycle spelling the cyclic 4-universal string 0000110010111101 in DeBruijn(BinaryStrings4).
+*Figure: An Eulerian cycle spelling the cyclic 4-universal string 0000110010111101 in DeBruijn(BinaryStrings4).*
 
-Code Challenge: Solve the k-Universal Circular String Problem. (Solve at Cogniterra or Rosalind.)
+**Code Challenge**: Solve the k-Universal Circular String Problem. (Solve at Cogniterra or [Rosalind](https://rosalind.info/problems/ba3i/).)
 
-Input: An integer k.
-Output: A k-universal circular string.
-## https://rosalind.info/problems/ba3i/
+- Input: An integer k.
+- Output: A k-universal circular string.
 
 # Lesson 3.9
 ## Assembling Genomes from Read-Pairs 
@@ -637,7 +636,7 @@ We have already mentioned that assembling reads sampled from a randomly generate
 
 ![alt text](images/debruijn_graphs.png)
 
-Figure: The graph DeBruijn4(TAATGCCATGGGATGTT) (top right) is less tangled than the graph DeBruijn3(TAATGCCATGGGATGTT) (top left). The graph DeBruijn5(TAATGCCATGGGATGTT) is a path (bottom).
+*Figure: The graph DeBruijn4(TAATGCCATGGGATGTT) (top right) is less tangled than the graph DeBruijn3(TAATGCCATGGGATGTT) (top left). The graph DeBruijn5(TAATGCCATGGGATGTT) is a path (bottom).*
            
 
 We saw earlier that the string TAATGCCATGGGATGTT cannot be uniquely reconstructed from its 3-mer composition since another string (TAATGGGATGCCATGTT) has the same 3-mer composition.
@@ -656,7 +655,8 @@ Let Reads be the collection of all 2N k-mer reads taken from N read-pairs. Note 
 For example, consider the de Bruijn graph below, which is generated from all reads present in the read-pairs from the previous step. There is a unique string spelled by paths of length k + d + 1 = 5 between edges labeled AAT and CCA within a read-pair represented by the gapped read AAT-CCA. Thus, from two short reads of length k, we have generated a long virtual read of length 2 · k + d, achieving computationally what researchers still cannot achieve experimentally! After preprocessing the de Bruijn graph to produce long virtual reads, we can simply construct the de Bruijn graph from these long reads and use it for genome assembly.
 
 ![alt text](images/path_in_paired_reads_graph.png)
-Figure: Each path of length 3 + 1 + 1 = 5 (connecting node AAT to node CCA) spells out AATGCCA. Thus, the gapped read AAT-CCA can be transformed into a long virtual read AATGCCA, shown by the highlighted path. (There are three such paths because there are three possible choices of edges labeled ATG.
+
+Figure: Each path of length 3 + 1 + 1 = 5 (connecting node AAT to node CCA) spells out AATGCCA. Thus, the gapped read AAT-CCA can be transformed into a long virtual read AATGCCA, shown by the highlighted path. There are three such paths because there are three possible choices of edges labeled ATG.
 
 Although the idea of transforming read-pairs into long virtual reads is used in many assembly programs, we have made an optimistic assumption: “If there is only one path of length k + d + 1 connecting these nodes, or if all such paths spell out the same string" In practice, this assumption limits the application of the long virtual read approach to assembling read-pairs because highly repetitive genomic regions often contain multiple paths of the same length between two edges spelling different strings (see the figure below). If this is the case, then we cannot reliably transform a read-pair into a long read. Instead, we will describe an alternative approach to analyzing read-pairs.
 
@@ -677,8 +677,8 @@ Note that while there are repeated 3-mers in the 3-mer composition of this strin
 
 String Reconstruction from Read-Pairs Problem: Reconstruct a string from its paired composition.
 
-Input: A collection of paired k-mers PairedReads and an integer d.
-Output: A string Text with (k,d)-mer composition equal to PairedReads (if such a string exists).
+- Input: A collection of paired k-mers PairedReads and an integer d.
+- Output: A string Text with (k,d)-mer composition equal to PairedReads (if such a string exists).
 Paired de Bruijn graphs
 Given a (k, d)-mer (a1 ... ak | b1 ... bk), we define its prefix as the (k − 1, d + 1)-mer (a1 ... ak -1 | b1 ... bk - 1), and its suffix as the (k - 1,d + 1)-mer (a2 ... ak | b2 ... bk). For example, Prefix((GAC|TCA)) = (GA|TC) and Suffix((GAC|TCA)) = (AC|CA).
 
@@ -731,11 +731,10 @@ An attempt to assemble these (2,1)-mers reveals that not every column has the sa
 
 You are now ready to reconstruct a string from read-pairs and become a genome assembly expert.
 
-Code Challenge: Solve the String Reconstruction from Read-Pairs Problem. (Solve at Cogniterra or Rosalind.)
-## https://rosalind.info/problems/ba3j/
+**Code Challenge**: Solve the String Reconstruction from Read-Pairs Problem. (Solve at Cogniterra or [Rosalind](https://rosalind.info/problems/ba3j/).)
 
-Input: Integers k and d followed by a collection of paired k-mers PairedReads.
-Output: A string Text with (k, d)-mer composition equal to PairedReads.
+- Input: Integers k and d followed by a collection of paired k-mers PairedReads.
+- Output: A string Text with (k, d)-mer composition equal to PairedReads.
 To solve the String Reconstruction from Read-Pairs Problem, you will need to reconstruct a string from its path in the paired de Bruijn graph. Check out "Charging Station: Reconstructing a String in the Paired de Bruijn Graph" in the print companion or at Cogniterra to see how this can be done.
 
 
@@ -773,9 +772,8 @@ Contig Generation Problem: Generate the contigs from a collection of reads (with
 Input: A collection of k-mers Patterns.
 Output: All contigs in DeBruijn(Patterns).
 
-Code Challenge: Solve the Contig Generation Problem. (Solve at Cogniterra or Rosalind.)
+**Code Challenge**: Solve the Contig Generation Problem. (Solve at Cogniterra or [Rosalind](https://rosalind.info/problems/ba3k/).)
 
-## https://rosalind.info/problems/ba3k/
 
 If you have difficulties finding maximal non-branching paths in a graph, check out "Charging Station: Maximal Non-Branching Paths in a Graph" in the print companion or at Cogniterra.
 
