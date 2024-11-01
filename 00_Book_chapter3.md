@@ -436,3 +436,92 @@ Our guess is that you would prefer working with the de Bruijn graph, since it is
 
 The choice between these two graphs is the pivotal decision of this chapter. To help you make this decision, we will ask you to hop onboard our bioinformatics time machine for a field trip to the 18th Century.
 ![alt text](images/overlap_graph_lex.png)
+
+# Lesson 3.6
+
+## The Seven Bridges of Konigsberg
+Our destination is 1735 and the Prussian city of Königsberg. This city, which today is Kaliningrad, Russia, comprised both banks of the Pregel River as well as two river islands; seven bridges connected these four different parts of the city, as illustrated below. Königsberg’s residents enjoyed taking walks, and they asked a natural question: Is it possible to set out from my house, cross each bridge exactly once, and return home? Their question became known as the Bridges of Königsberg Problem.
+
+Figure: A map of Königsberg, adapted from Joachim Bering’s 1613 illustration. The city was made up of four sectors represented by the blue, red, yellow, and green dots. The seven bridges connecting the different parts of the city have been highlighted to make them easier to see.
+
+
+![alt text](images/konigsberg.png)
+Exercise Break: Does the Bridges of Königsberg Problem have a solution?
+
+![alt text](images/konigsberg.png)
+
+In 1735, Leonhard Euler drew the graph shown below, which we call Königsberg; this graph’s nodes represent the four sectors of the city, and its edges represent the seven bridges connecting different sectors. Note that the edges of Königsberg are undirected, meaning that they can be traversed in either direction.
+
+Figure: The graph Königsberg.
+
+STOP and Think: Redefine the Bridges of Königsberg Problem as a question about the graph Königsberg.
+
+We have already defined an Eulerian path as a path in a graph traversing each edge of a graph exactly once. A cycle that traverses each edge of a graph exactly once is called an Eulerian cycle, and we say that a graph containing such a cycle is Eulerian. Note that an Eulerian cycle in Königsberg would immediately provide the residents of the city with the walk they had wanted. We now can redefine the Bridges of Königsberg Problem as an instance of the following more general problem.
+
+Eulerian Cycle Problem: Find an Eulerian cycle in a graph.
+
+Input: A graph.
+Output: An Eulerian cycle in this graph, if one exists.
+Euler solved the Bridges of Königsberg Problem, showing that no walk can cross each bridge exactly once (i.e., the graph Königsberg is not Eulerian), which you may have already figured out for yourself. Yet his real contribution, and the reason why he is viewed as the founder of the mathematical field of graph theory, a field of study that still flourishes today, is that he proved a theorem dictating precisely when a graph will have an Eulerian cycle. His theorem immediately implies an efficient algorithm for constructing an Eulerian cycle in any Eulerian graph, even one having millions of edges. Furthermore, this algorithm can easily be extended into an algorithm constructing an Eulerian path (in a graph having such a path), which will allow us to solve the String Reconstruction Problem by using the de Bruijn graph.
+
+On the other hand, it turns out that no one has ever been able to find an efficient algorithm solving the Hamiltonian Path Problem. The search for such an algorithm, or for a proof that an efficient algorithm does not exist for this problem, is at the heart of one of the most fundamental unanswered questions in computer science. Computer scientists classify an algorithm as polynomial if its running time can be bounded by a polynomial in the length of the input data. On the other hand, an algorithm is exponential if its runtime on some datasets is exponential in the length of the input data. Although Euler's algorithm is polynomial, the Hamiltonian Path Problem belongs to a special class of problems for which all attempts to develop a polynomial algorithm have failed (see "DETOUR: Tractable and Intractable Problems" in the print companion or at Cogniterra). Yet instead of trying to solve a problem that has stumped computer scientists for four decades, we will set aside the overlap graph and instead focus on the de Bruijn graph approach to genome assembly.
+
+For the first two decades following the invention of DNA sequencing methods, biologists assembled genomes using overlap graphs, since they failed to recognize that the Bridges of Königsberg held the key to DNA assembly. (For more details, see "DETOUR: From Euler to Hamilton to de Bruijn" in the print companion or at Cogniterra.) Indeed, overlap graphs were used to assemble the human genome. It took bioinformaticians some time to figure out that the de Bruijn graph, first constructed to solve a completely theoretical problem, was relevant to genome assembly. Moreover, when the de Bruijn graph was brought to bioinformatics, it was considered an exotic mathematical concept with limited practical applications. Today, the de Bruijn graph has become the dominant approach for genome assembly.
+
+# Lesson 3.7
+## Euler's Theorem
+
+We will now explore Euler’s method for solving the Eulerian Cycle Problem. Euler worked with undirected graphs like Königsberg, but we will consider an analogue of his algorithm for directed graphs so that his method will apply to genome assembly.
+
+Consider an ant, whom we will call Leo, walking along the edges of an Eulerian cycle. Every time Leo enters a node of this graph by an edge, he is able to leave this node by another, unused edge. Thus, in order for a graph to be Eulerian, the number of incoming edges at any node must be equal to the number of outgoing edges at that node. We define the indegree and outdegree of a node v (denoted in(v) and out(v), respectively) as the number of edges leading into and out of v. A node v is balanced if in(v) = out(v), and a graph is balanced if all its nodes are balanced. Because Leo must always be able to leave a node by an unused edge, any Eulerian graph must be balanced. The figure below shows a balanced graph and an unbalanced graph.
+![alt text](images/balanced_unbalanced_graph.png)
+
+Figure: Balanced (left) and unbalanced (right) directed graphs. For the (unbalanced) blue node v, in(v) = 1 and out(v) = 2, whereas for the (unbalanced) red node w, in(w) = 2 and out(w) = 1.
+
+STOP and Think: We now know that every Eulerian graph is balanced; is every balanced graph Eulerian?
+
+The graph in the figure below is balanced but not Eulerian because it is disconnected, meaning that some nodes cannot be reached from other nodes. In any disconnected graph, it is impossible to find an Eulerian cycle. In contrast, we say that a directed graph is strongly connected if it is possible to reach any node from every other node. We now know that an Eulerian graph must be both balanced and strongly connected. Euler’s Theorem states that these two conditions are sufficient to guarantee that an arbitrary graph is Eulerian. As a result, it implies that we can determine whether a graph is Eulerian without ever having to draw any cycles.
+
+Euler’s Theorem: Every balanced, strongly connected directed graph is Eulerian.
+
+For the rest of this lesson, we will prove Euler's Theorem by assuming we have an arbitrary balanced and strongly connected directed graph and showing that this graph must have an Eulerian cycle.
+
+![alt text](images/disconnected_graph.png)
+Figure: A balanced, disconnected graph.
+
+![alt text](images/Leo-1.png)
+Figure: Leo starts at the green node v0 and walks through a balanced and strongly connected graph.
+
+Let Graph be an arbitrary balanced and strongly connected directed graph. To prove that Graph has an Eulerian cycle, place Leo at any node v0 of Graph (the green node in the figure above), and let him randomly walk through the graph under the condition that he cannot traverse the same edge twice.
+
+If Leo were incredibly lucky — or a genius — then he would traverse each edge exactly once and return back to v0. However, odds are that Leo will “get stuck" somewhere before he can complete an Eulerian cycle, meaning that he reaches a node and finds no unused edges leaving that node.
+
+STOP and Think: Where is Leo when he gets stuck? Can he get stuck in any node of the graph or only in some nodes?
+![alt text](images/Leo-2.png)
+Figure: Leo produces a cycle Cycle0 (formed by green edges) when he gets stuck at the green node v0. In this case, he has not yet visited every edge in the graph.
+
+It turns out that the only node where Leo can get stuck is the starting node v0! The reason why is that Graph is balanced — if Leo walks into any node other than v0 (through an incoming edge), then he will always be able to escape via an unused outgoing edge. The only exception to this rule is the starting node v0, since Leo used up one of the outgoing edges of v0 on his first move. Now, because Leo has returned to v0, the result of his walk was a cycle, which we call Cycle0 (see the figure above).
+
+STOP and Think: Is there a way to give Leo different instructions so that he selects a longer walk through the graph before he gets stuck?
+![alt text](images/Leo-3.png)
+Figure: Starting at a new node v1 (shown in blue), Leo first travels along Cycle0, returning to v1. Note that v1, unlike v0, has unused outgoing and incoming edges.
+
+As we mentioned, if Cycle0 is Eulerian, we are finished. Otherwise, because Graph is strongly connected, some node on Cycle0 must have unused edges entering it and leaving it (why?). Naming this node v1 , we ask Leo to start at v1 instead of v0 and traverse Cycle0 (thus returning to v1), as shown in the figure above.
+![alt text](images/Leo-4.png)
+Figure: After traversing the previously constructed green cycle Cycle0, Leo continues walking and eventually produces a larger cycle Cycle1 formed of both the green and the blue cycles put together into a single cycle.
+
+Leo is probably annoyed that we have asked him to travel along the exact same cycle, since as before, he will eventually get stuck at v1, the node where he started. However, now there are unused edges starting at this node, and so he can continue walking from v1, using a new edge each time. The same argument as the one that we used above implies that Leo must eventually get stuck at v1. The result of Leo’s walk is a new cycle, Cycle1 (see the figure above), that is larger than Cycle0.
+
+
+
+![alt text](images/Leo_final_steps.png)
+
+
+
+Figure: (Left) Starting at a new node v2 (shown in red), the ant first travels along the previously constructed Cycle1 (shown as green and blue edges). (Right) After completing the walk through Cycle1, the ant continues randomly walking through the graph and finally produces an Eulerian cycle.
+
+If Cycle1 is an Eulerian cycle, then Leo has completed his job. Otherwise, we select a node v2 in Cycle1 that has unused edges entering it and leaving it (the red node in the figure above). Starting at v2, we ask Leo to traverse Cycle1, returning to v2 as shown in the right panel above. Afterwards, he will randomly walk until he gets stuck at v2, creating an even larger cycle that we name Cycle2.
+
+In the figure above, Cycle2 is Eulerian, although this is certainly not the case for an arbitrary graph. In general, Leo generates larger and larger cycles at each iteration, and so we are guaranteed that sooner or later some Cyclem will traverse all the edges in Graph. This cycle must be Eulerian, and so we (and Leo) are finished.
+
+STOP and Think: Can you formulate and prove an analogue of Euler’s Theorem for undirected graphs?
