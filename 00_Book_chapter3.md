@@ -1,5 +1,5 @@
 # Chapter 3 : How do we assemble genomes?
----
+
 ![alt text](images/assembly_cropped.png)
 
 
