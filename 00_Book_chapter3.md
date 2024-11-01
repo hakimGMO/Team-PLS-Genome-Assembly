@@ -1,4 +1,4 @@
-# Chater 3 : How do we assemble genomes?
+# Chapter 3 : How do we assemble genomes?
 ---
 ![alt text](images/assembly_cropped.png)
 
