@@ -525,3 +525,145 @@ If Cycle1 is an Eulerian cycle, then Leo has completed his job. Otherwise, we se
 In the figure above, Cycle2 is Eulerian, although this is certainly not the case for an arbitrary graph. In general, Leo generates larger and larger cycles at each iteration, and so we are guaranteed that sooner or later some Cyclem will traverse all the edges in Graph. This cycle must be Eulerian, and so we (and Leo) are finished.
 
 STOP and Think: Can you formulate and prove an analogue of Euler’s Theorem for undirected graphs?
+
+# Lesson 3.8
+
+## From Euler's Theorem to an Algorithm for Finding Eulerian Cycles
+
+### Constructing Eulerian cycles
+
+The proof of Euler’s Theorem offers an example of what mathematicians call a constructive proof, which not only proves the desired result, but also provides us with a method for constructing the object we need. In short, we track Leo’s movements until he inevitably produces an Eulerian cycle in a balanced and strongly connected graph Graph, as summarized in the following pseudocode.
+
+
+EulerianCycle(Graph)
+    form a cycle Cycle by randomly walking in Graph (don't visit the same edge twice!)
+    while there are unexplored edges in Graph
+        select a node newStart in Cycle with still unexplored edges
+        form Cycle’ by traversing Cycle (starting at newStart) and then randomly walking
+        Cycle ← Cycle’
+    return Cycle
+
+You should now be prepared to solve the Eulerian Cycle Problem for any graph. It may not be obvious, but a good implementation of EulerianCycle will work in linear time. To achieve this runtime speedup, you would need to use an efficient data structure in order to maintain the current cycle that Leo is building as well as the list of unused edges incident to each node and the list of nodes on the current cycle that have unused edges.
+
+Code Challenge: Solve the Eulerian Cycle Problem. (Solve at Cogniterra or Rosalind.)
+## https://rosalind.info/problems/ba3f/
+
+     Input: The adjacency list of an Eulerian directed graph.
+     Output: An Eulerian cycle in this graph.
+
+# From Eulerian cycles to Eulerian paths
+We can now check if a directed graph has an Eulerian cycle, but what about an Eulerian path? Consider the de Bruijn graph on the left in the figure below, which we already know has an Eulerian path, but which does not have an Eulerian cycle because nodes TA and TT are not balanced. However, we can transform this Eulerian path into an Eulerian cycle by adding a single edge connecting TT and TA, as shown in the figure below.
+
+STOP and Think: How many unbalanced nodes does a graph with an Eulerian path have?
+
+![alt text](images/Eulerian_path_to_cycle.png)
+
+Figure: Transforming an Eulerian path (left) into an Eulerian cycle (right) by adding an edge.
+
+More generally, consider a graph that does not have an Eulerian cycle but does have an Eulerian path. If an Eulerian path in this graph connects a node v to a different node w, then the graph is nearly balanced, meaning that all its nodes except v and w are balanced. In this case, adding an extra edge from w to v transforms the Eulerian path into an Eulerian cycle. Thus, a nearly balanced graph has an Eulerian path if and only if adding an edge between its unbalanced nodes makes the graph balanced and strongly connected.
+
+STOP and Think: Find an analogue of the nearly balanced condition that will determine when an undirected graph has an Eulerian path.
+
+The analogue of Euler’s theorem for undirected graphs immediately implies that there is no Eulerian path in Königsberg. However, the story is different in modern-day Kaliningrad; for more details, see "DETOUR: The Bridges of Kaliningrad" in the print companion or at Cogniterra.
+
+
+Code Challenge: Solve the Eulerian Path Problem. (Solve at Cogniterra or Rosalind.)
+## https://rosalind.info/problems/ba3g/
+
+Input: The adjacency list of a directed graph that has an Eulerian path.
+Output: An Eulerian path in this graph.
+You now have a method to assemble a genome, since the String Reconstruction Problem reduces to finding an Eulerian path in the de Bruijn graph generated from reads.
+
+We can therefore summarize this solution using the following pseudocode, which relies on three problems that we have already solved:
+
+The de Bruijn Graph Construction Problem;
+The Eulerian Path Problem;
+The String Spelled by a Genome Path Problem.
+```python
+    StringReconstruction(Patterns)
+        dB ← DeBruijn(Patterns)
+        path ← EulerianPath(dB)
+        Text﻿ ← PathToGenome(path)
+        return Text
+```
+
+Code Challenge: Solve the String Reconstruction Problem. (Solve at Cogniterra or Rosalind.) 
+## https://rosalind.info/problems/ba3h/
+
+Input: An integer k followed by a list of k-mers Patterns.
+Output: A string Text with k-mer composition equal to Patterns. (If multiple answers exist, you may return any one.)
+Constructing universal strings
+Now that you know how to use the de Bruijn graph to solve the String Reconstruction Problem, you can also construct a k-universal string for any value of k.
+
+We should note that de Bruijn was interested in constructing k-universal circular strings. For example, 00011101 is a 3-universal circular string, as it contains each of the eight binary 3-mers (000, 001, 011, 111, 110, 101, 010, and 100) exactly once (see the figure below).
+
+k-Universal Circular String Problem: Find a k-universal circular string.
+
+Input: An integer k.
+Output: A k-universal circular string.
+
+![alt text](images/k_universal_circular_string.png)
+
+Figure: The circular 3-universal string 00011101 contains each of the binary 3-mers exactly once.
+
+Like its analogue for linear strings, the k-Universal Circular String Problem is just a specific case of a more general problem, which requires us to reconstruct a circular string given its k-mer composition. This problem models the assembly of a circular genome containing a single chromosome, like the genomes of most bacteria. We know that we can reconstruct a circular string from its k-mer composition by finding an Eulerian cycle in the de Bruijn graph constructed from these k-mers. Therefore, we can construct a k-universal circular binary string by finding an Eulerian cycle in the de Bruijn graph constructed from the collection of all binary k-mers (see figure below).
+
+Exercise Break: How many 3-universal circular strings are there?
+
+![alt text](images/debruijn_graph_circular.png)
+Figure: (Top) A graph consisting of eight isolated directed edges, one for each binary 3-mer. The nodes of each edge correspond to the 3-mer’s prefix and suffix. (Bottom) Gluing identically labeled nodes in the graph on top results in a de Bruijn graph containing four nodes. An Eulerian cycle through the edges 000 → 001 → 011 → 111 → 110 → 101 → 010 → 100 yields the 3-universal circular string 00011101.
+
+Even though finding a 20-universal circular string amounts to finding an Eulerian cycle in a graph with over a million edges, we now have a fast algorithm for solving this problem. Let BinaryStringsk be the set of all 2k binary k-mers. The only thing we need to do is solve the k-Universal Circular String Problem is to find an Eulerian cycle in DeBruijn(BinaryStringsk). Note that the nodes of this graph represent all possible binary (k - 1)-mers. A directed edge connects (k - 1)-mer Pattern to (k - 1)-mer Pattern' in this graph if there exists a k-mer whose prefix is Pattern and whose suffix is Pattern'.
+
+STOP and Think: The figure below illustrates that DeBruijn(BinaryStrings4) is balanced and strongly connected and is thus Eulerian. Can you prove that for any k, DeBruijn(BinaryStringsk) is Eulerian?
+
+![alt text](images/4_universal_string.png)
+
+Figure: An Eulerian cycle spelling the cyclic 4-universal string 0000110010111101 in DeBruijn(BinaryStrings4).
+
+Code Challenge: Solve the k-Universal Circular String Problem. (Solve at Cogniterra or Rosalind.)
+
+Input: An integer k.
+Output: A k-universal circular string.
+## https://rosalind.info/problems/ba3i/
+
+# Lesson 3.9
+## Assembling Genomes from Read-Pairs 
+## From reads to read-pairs
+
+Previously, we described an idealized form of genome assembly in order to build up your intuition about de Bruijn graphs. In the rest of the chapter, we will discuss a number of practically motivated topics that will help you appreciate the advanced methods used by modern assemblers.
+
+We have already mentioned that assembling reads sampled from a randomly generated text is trivial, since random strings are not expected to have long repeats. Moreover, de Bruijn graphs become less and less tangled when read length increases (see the figure below). As soon as read length exceeds the length of all repeats in a genome (provided the reads have no errors), the de Bruijn graph turns into a path. However, despite many attempts, biologists have not yet figured out how to generate long and accurate reads. The most accurate sequencing technologies available today generate reads that are only about 300 nucleotides long, which is too short to span most repeats, even in short bacterial genomes.
+
+![alt text](images/debruijn_graphs.png)
+
+Figure: The graph DeBruijn4(TAATGCCATGGGATGTT) (top right) is less tangled than the graph DeBruijn3(TAATGCCATGGGATGTT) (top left). The graph DeBruijn5(TAATGCCATGGGATGTT) is a path (bottom).
+           
+
+We saw earlier that the string TAATGCCATGGGATGTT cannot be uniquely reconstructed from its 3-mer composition since another string (TAATGGGATGCCATGTT) has the same 3-mer composition.
+
+STOP and Think: What additional experimental information would allow you to uniquely reconstruct the string TAATGCCATGGGATGTT?
+
+Increasing read length would help identify the correct assembly, but since increasing read length presents a difficult experimental problem, biologists have devised an ingenious experimental approach to increase read length by generating read-pairs, which are pairs of reads separated by a fixed distance d in the genome (see figure below). You can think about a read-pair as a long “gapped" read of length k + d + k whose first and last k-mers are known but whose middle segment of length d is unknown. Nevertheless, read-pairs contain more information than k-mers alone, and so we should be able to use them to improve our assemblies. If only you could infer the nucleotides in the middle segment of a read-pair, you would immediately increase the read length from k to 2 · k + d.
+
+![alt text](images/read_pairs.png)
+
+Figure: Read-pairs sampled from TAATGCCATGGGATGTT and formed by reads of length 3 separated by a gap of length 1. A simple but inefficient way to assemble these read-pairs is to construct the de Bruijn graph of individual reads (3-mers) within the read-pairs.
+
+Transforming read-pairs into long virtual reads
+Let Reads be the collection of all 2N k-mer reads taken from N read-pairs. Note that a read-pair formed by k-mer reads Read1 and Read2 corresponds to two edges in the de Bruijn graph DeBruijnk(Reads). Since these reads are separated by distance d in the genome, there must be a path of length k + d in DeBruijnk(Reads) connecting the node at the beginning of the edge corresponding to Read1 with the node at the beginning of the edge corresponding to Read2, as shown in the figure below. If there is only one path of length k + d + 1 connecting these nodes, or if all such paths spell out the same string, then we can transform a read-pair formed by reads Read1 and Read2 into a virtual read of length 2 · k + d that starts as Read1, spells out this path, and ends with Read2.
+
+For example, consider the de Bruijn graph below, which is generated from all reads present in the read-pairs from the previous step. There is a unique string spelled by paths of length k + d + 1 = 5 between edges labeled AAT and CCA within a read-pair represented by the gapped read AAT-CCA. Thus, from two short reads of length k, we have generated a long virtual read of length 2 · k + d, achieving computationally what researchers still cannot achieve experimentally! After preprocessing the de Bruijn graph to produce long virtual reads, we can simply construct the de Bruijn graph from these long reads and use it for genome assembly.
+
+![alt text](images/path_in_paired_reads_graph.png)
+Figure: Each path of length 3 + 1 + 1 = 5 (connecting node AAT to node CCA) spells out AATGCCA. Thus, the gapped read AAT-CCA can be transformed into a long virtual read AATGCCA, shown by the highlighted path. (There are three such paths because there are three possible choices of edges labeled ATG.
+
+Although the idea of transforming read-pairs into long virtual reads is used in many assembly programs, we have made an optimistic assumption: “If there is only one path of length k + d + 1 connecting these nodes, or if all such paths spell out the same string" In practice, this assumption limits the application of the long virtual read approach to assembling read-pairs because highly repetitive genomic regions often contain multiple paths of the same length between two edges spelling different strings (see the figure below). If this is the case, then we cannot reliably transform a read-pair into a long read. Instead, we will describe an alternative approach to analyzing read-pairs.
+
+![alt text](images/long_virtual_reads.png)
+
+Figure: (Left) The highlighted path in DeBruijn3(AATCTGACATATGG) spells out the long virtual read AATCTGACA, which is a substring of AATCTGACATATGG. (Right) The highlighted path in the same graph spells out the long virtual read AATATGACA, which does not occur in AATCTGACATATGG.
+
+From composition to paired composition
+Given a string Text, a (k,d)-mer is a pair of k-mers in Text separated by distance d. We use the notation (Pattern1|Pattern2) to refer to a (k,d)-mer whose k-mers are Pattern1 and Pattern2. For example, (AAT|TGG) is a (3,4)-mer in TAATGCCATGGGATGTT. The (k,d)-mer composition of Text, denoted PairedCompositionk,d(Text), is the collection of all (k,d)- mers in Text (including repeated (k,d)-mers). For example, here is PairedComposition3,1(TAATGCCATGGGATGTT):
+![alt text](images/image-1.png)
