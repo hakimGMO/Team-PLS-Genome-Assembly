@@ -132,7 +132,7 @@ STOP and Think: Design a strategy for assembling the Triazzle puzzle.
 ## <center>From a string to a graph</center>
 Repeats in a genome necessitate some way of looking ahead to see the correct assembly in advance. Returning to our above example, you may have already found that TAATGCCATGGGATGTT is a solution to the String Reconstruction Problem for the collection of fifteen 3-mers in the last section, as illustrated below. Note that we use a different color for each interval of the string between occurrences of ATG.
 
-![alt text](image.png)
+![alt text](images/image.png)
 
 STOP and Think: Is this the only solution to the String Reconstruction Problem for this collection of 3-mers?
 
