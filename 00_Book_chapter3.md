@@ -541,7 +541,7 @@ The String Spelled by a Genome Path Problem.
 
 - Input: An integer k followed by a list of k-mers Patterns.
 - Output: A string Text with k-mer composition equal to Patterns. (If multiple answers exist, you may return any one.)
-Constructing universal strings
+## <center>Constructing universal strings</center>
 Now that you know how to use the de Bruijn graph to solve the String Reconstruction Problem, you can also construct a k-universal string for any value of k.
 
 We should note that de Bruijn was interested in constructing k-universal circular strings. For example, 00011101 is a 3-universal circular string, as it contains each of the eight binary 3-mers (000, 001, 011, 111, 110, 101, 010, and 100) exactly once (see the figure below).
@@ -575,9 +575,8 @@ STOP and Think: The figure below illustrates that DeBruijn(BinaryStrings4) is ba
 - Input: An integer k.
 - Output: A k-universal circular string.
 
-# Lesson 3.9
-## Assembling Genomes from Read-Pairs 
-## From reads to read-pairs
+# Lesson 3.9 : Assembling Genomes from Read-Pairs 
+# <center>From reads to read-pairs</center>
 
 Previously, we described an idealized form of genome assembly in order to build up your intuition about de Bruijn graphs. In the rest of the chapter, we will discuss a number of practically motivated topics that will help you appreciate the advanced methods used by modern assemblers.
 
@@ -598,7 +597,7 @@ Increasing read length would help identify the correct assembly, but since incre
 
 *Figure: Read-pairs sampled from TAATGCCATGGGATGTT and formed by reads of length 3 separated by a gap of length 1. A simple but inefficient way to assemble these read-pairs is to construct the de Bruijn graph of individual reads (3-mers) within the read-pairs.*
 
-Transforming read-pairs into long virtual reads
+## <center>Transforming read-pairs into long virtual reads</center>
 Let Reads be the collection of all 2N k-mer reads taken from N read-pairs. Note that a read-pair formed by k-mer reads Read1 and Read2 corresponds to two edges in the de Bruijn graph DeBruijnk(Reads). Since these reads are separated by distance d in the genome, there must be a path of length k + d in DeBruijnk(Reads) connecting the node at the beginning of the edge corresponding to Read1 with the node at the beginning of the edge corresponding to Read2, as shown in the figure below. If there is only one path of length k + d + 1 connecting these nodes, or if all such paths spell out the same string, then we can transform a read-pair formed by reads Read1 and Read2 into a virtual read of length 2 · k + d that starts as Read1, spells out this path, and ends with Read2.
 
 For example, consider the de Bruijn graph below, which is generated from all reads present in the read-pairs from the previous step. There is a unique string spelled by paths of length k + d + 1 = 5 between edges labeled AAT and CCA within a read-pair represented by the gapped read AAT-CCA. Thus, from two short reads of length k, we have generated a long virtual read of length 2 · k + d, achieving computationally what researchers still cannot achieve experimentally! After preprocessing the de Bruijn graph to produce long virtual reads, we can simply construct the de Bruijn graph from these long reads and use it for genome assembly.
@@ -628,7 +627,8 @@ String Reconstruction from Read-Pairs Problem: Reconstruct a string from its pai
 
 - Input: A collection of paired k-mers PairedReads and an integer d.
 - Output: A string Text with (k,d)-mer composition equal to PairedReads (if such a string exists).
-Paired de Bruijn graphs
+
+## <center>Paired de Bruijn graphs</center>
 Given a (k, d)-mer (a1 ... ak | b1 ... bk), we define its prefix as the (k − 1, d + 1)-mer (a1 ... ak -1 | b1 ... bk - 1), and its suffix as the (k - 1,d + 1)-mer (a2 ... ak | b2 ... bk). For example, Prefix((GAC|TCA)) = (GA|TC) and Suffix((GAC|TCA)) = (AC|CA).
 
 Note that for consecutive (k, d)-mers appearing in Text, the suffix of the first (k, d)-mer is equal to the prefix of the second (k, d)-mer. For example, for the consecutive (k, d)-mers (TAA|GCC) and (AAT | CCA) in  TAATGCCATGGGATGTT, Suffix((TAA | GCC)) = Prefix((AAT | CCA))=(AA | CC).
@@ -650,7 +650,7 @@ We define PairedCompositionGraphk,d(Text) as the graph consisting of |Text| - (k
 
 *Figure: The graph PairedCompositionGraph3,1(TAATGCCATGGGATGTT) is a collection of isolated edges. Each edge is labeled by a (3,1)-mer in TAATGCCATGGGATGTT; the starting node of an edge is labeled by the prefix of the edge's (3,1)-mer, and the ending node of an edge is labeled by the suffix of this (3,1)-mer. Gluing identically labeled nodes yields the paired de Bruijn graph from the previous step.*
 
-A pitfall of paired de Bruijn graphs
+## <center>A pitfall of paired de Bruijn graphs</center>
 We saw earlier that every solution of the String Reconstruction Problem corresponds to an Eulerian path in the de Bruijn graph constructed from a k-mer com- position. Likewise, every solution of the String Reconstruction from Read-Pairs Problem corresponds to an Eulerian path in the Paired de Bruijn graph constructed from a (k,d)-mer composition.
 
 Exercise Break: In the paired de Bruijn graph shown below, reconstruct the genome spelled by the following Eulerian path of (2,1)-mers: (AG|AG) →(GC|GC) → (CA|CT) → (AG|TG) → (GC|GC) → (CT|CT) → (TG|TG) → (GC|GC) → (CT|CA).
@@ -687,13 +687,12 @@ You are now ready to reconstruct a string from read-pairs and become a genome as
 To solve the String Reconstruction from Read-Pairs Problem, you will need to reconstruct a string from its path in the paired de Bruijn graph. Check out "Charging Station: Reconstructing a String in the Paired de Bruijn Graph" in the print companion or at Cogniterra to see how this can be done.
 
 
-# Epilogue
-## Epilogue: Genome Assembly Faces Real 
-
+# Epilogue: Genome Assembly Faces Real 
 
 Our discussion of genome assembly has thus far relied upon various assumptions. Accordingly, applying de Bruijn graphs to real sequencing data is not a straightforward procedure. Below, we describe practical challenges introduced by quirks in modern sequencing technologies and some computational techniques that have been devised to address these challenges. In this discussion, we will first assume that reads are generated as contiguous substrings of a genome instead of read-pairs for the sake of simplicity.
 
-Breaking reads into k-mers
+## <center>Breaking reads into k-mers</center>
+
 First, given a k-mer substring of a genome, we define its coverage as the number of reads to which this k-mer belongs.
 
 There is also a sense of coverage in terms of how well a collection of sequencing reads "cover" the genome.  We have previously taken for granted that a sequencing machine can generate all k-mers present in the genome, but this assumption of "perfect coverage" does not hold in practice. For example, the popular Illumina sequencing technology generates reads that are approximately 300 nucleotides long, but this technology still misses many 300-mers present in the genome (even if the average coverage is very high), and nearly all the reads that it does generate have sequencing errors.  How, then, can we use these reads effectively?
@@ -707,7 +706,7 @@ Read breaking must deal with a practical trade-off. On the one hand, the smaller
 
 *Figure: Breaking 10-mer reads (left) into 5-mers results in perfect coverage of a genome by 5-mers (right).*
 
-## Splitting the genome into contigs
+## <center>Splitting the genome into contigs</center>
 Even after read breaking, most assemblies still have gaps in k-mer coverage, causing the de Bruijn graph to have missing edges, and so the search for an Eulerian path fails. In this case, biologists often settle on assembling contigs (long, contiguous segments of the genome) rather than entire chromosomes. For example, a typical bacterial sequencing project may result in about a hundred contigs, ranging in length from a few thousand to a few hundred thousand nucleotides. For most genomes, the order of these contigs along the genome remains unknown. Needless to say, biologists would prefer to have the entire genomic sequence, but the cost of ordering the contigs into a final assembly and closing the gaps using more expensive experimental methods is often prohibitive.
 
 Fortunately, we can derive contigs from the de Bruijn graph. A path in a graph is called non-branching if in(v) = out(v) = 1 for each intermediate node v of this path, i.e., for each node except possibly the starting and ending node of a path. A maximal non-branching path is a non-branching path that cannot be extended into a longer non-branching path. We are interested in these paths because the strings of nucleotides that they spell out must be present in any assembly with a given k-mer composition. For this reason, contigs correspond to strings spelled by maximal non-branching paths in the de Bruijn graph. For example, the de Bruijn graph below, constructed for the 3-mer composition of TAATGCCATGGGATGTT, has nine maximal non-branching paths that spell out the contigs TAAT, TGTT, TGCCAT, ATG, ATG, ATG, TGG, GGG, and GGAT. In practice, biologists have no choice but to break genomes into contigs, even in the case of perfect coverage (like in the figure below), since repeats prevent them from being able to infer a unique Eulerian path.
@@ -718,15 +717,15 @@ Fortunately, we can derive contigs from the de Bruijn graph. A path in a graph i
 
 Contig Generation Problem: Generate the contigs from a collection of reads (with imperfect coverage).
 
-Input: A collection of k-mers Patterns.
-Output: All contigs in DeBruijn(Patterns).
+- Input: A collection of k-mers Patterns.
+- Output: All contigs in DeBruijn(Patterns).
 
 **Code Challenge**: Solve the Contig Generation Problem. (Solve at Cogniterra or [Rosalind](https://rosalind.info/problems/ba3k/).)
 
 
 If you have difficulties finding maximal non-branching paths in a graph, check out "Charging Station: Maximal Non-Branching Paths in a Graph" in the print companion or at Cogniterra.
 
-## Assembling error-prone reads
+## <center>Assembling error-prone reads</center>
 Error-prone reads represent yet another barrier to real sequencing projects. Adding the single erroneous read CGTACGGACA (with a single error that misreads T as C) to the set of "broken" 5-mer reads from earlier in the lesson results in erroneous 5-mers CGTAC, GTACG, TACGG, ACGGA, and CGGAC after read breaking. These 5-mers result in an erroneous path from node CGTA to node GGAC in the de Bruijn graph below, meaning that if the correct read CGTATGGACA is generated as well, then we will have two paths connecting CGTA to GGAC in the de Bruijn graph. This structure is called a bubble, which we define as two short disjoint paths (e.g., shorter than some threshold length) connecting the same pair of nodes in the de Bruijn graph.
 
 STOP and Think: What is the size of the bubble (in the de Bruijn graph constructed from k-mers) introduced by a single error in a read?
@@ -744,18 +743,19 @@ Bubble removal occasionally removes the correct path, thus introducing errors ra
 ![alt text](images/many_bubbles.png)
 *Figure: An illustration of a de Bruijn graph with many bubbles. Bubble removal should leave only the colored paths remaining.*
 
-Inferring multiplicities of edges in de Bruijn graphs
+## <center>Inferring multiplicities of edges in de Bruijn graphs</center>
 Next, while the de Bruijn graph framework requires that we know the multiplicity of each k-mer in the genome (i.e., the number of times the k-mer appears), this information is not readily available from reads. However, the multiplicity of a k-mer in a genome can often be estimated using its coverage. Indeed, k-mers that appear t times in a genome are expected to have approximately t times higher coverage than k-mers that appear just once. Needless to say, coverage varies across the genome, and this condition is often violated. As a result, existing assemblers often assemble repetitive regions in genomes without knowing the exact number of times each k-mer from this region occurs in the genome.
 
 We have introduced you to some of the practical considerations in genome sequencing, but some still remain; for example, how do we deal with the fact that genomes are double-stranded? (See "DETOUR: Pitfalls of Assembling Double-Stranded DNA" in the print companion or at Cogniterra.) In practice, researchers will eventually obtain a collection of contigs from a genome sequencing experiments, but partitioning these contigs into two groups (corresponding to each strand) is a difficult problem that modern assemblers have yet to fully resolve. For example, if an assembler outputs five contigs, it may be that contigs 1 and 3 belong to one strand while contigs 2, 4, and 5 belong to the opposing strand.
 
 However, we will give you a challenge problem that does not encounter these issues. Why? Developing assembly algorithms for large genomes is a formidable challenge because even the seemingly simple problem of constructing the de Bruijn graph from a collection of all k-mers present in millions of reads is nontrivial. To make your life easier, we will give you a small bacterial genome for your first assembly dataset.
 
-Final Challenge: Carsonella ruddii is a bacterium that lives symbiotically inside some insects. Its sheltered life has allowed it to reduce its genome to only about 160,000 base pairs. With only about 200 genes, it lacks some genes necessary for survival, but these genes are supplied by its insect host. In fact, Carsonella has such a small genome that biologists have conjectured that it is losing its “bacterial" identity and turning into an organelle, which is part of the host’s genome. This transition from bacterium to organelle has happened many times during evolutionary history; in fact, the mitochondrion responsible for energy production in human cells was once a free-roaming bacterium that we assimilated in the distant past.
+## <center>Final Challenge: </center>
+Carsonella ruddii is a bacterium that lives symbiotically inside some insects. Its sheltered life has allowed it to reduce its genome to only about 160,000 base pairs. With only about 200 genes, it lacks some genes necessary for survival, but these genes are supplied by its insect host. In fact, Carsonella has such a small genome that biologists have conjectured that it is losing its “bacterial" identity and turning into an organelle, which is part of the host’s genome. This transition from bacterium to organelle has happened many times during evolutionary history; in fact, the mitochondrion responsible for energy production in human cells was once a free-roaming bacterium that we assimilated in the distant past.
 
 Given a collection of simulated error-free read-pairs (with exact distance d = 1000 between reads of length k = 120 within a read-pair), use the paired de Bruijn graph to reconstruct the Carsonella ruddii genome. Compare this assembly to the assembly obtained from the classic de Bruijn graph (i.e., when all we know is the reads themselves and do not know the distance between paired reads) in order to better appreciate the benefits of read-pairs. For each k, what is the minimum value of d needed to enable reconstruction of the entire Carsonella ruddii genome from its (k,d)-mer composition?
 
-Challenge Dataset
+[Challenge Dataset](final_challenge/reads.txt)
 
 Exercise Break: By the way, one more thing … what was the headline of the June 27, 2000 edition of the New York Times?
 
