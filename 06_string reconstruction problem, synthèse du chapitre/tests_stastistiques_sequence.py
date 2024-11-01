@@ -49,7 +49,7 @@ if __name__ == "__main__":
     # Test avec le grand jeu de données
     print("\n\nTest avec le grand jeu de données :")
     try:
-        patterns_large = read_kmers_from_file('extra_dataset')
+        patterns_large = read_kmers_from_file('extra_dataset_readpairs')
         graph_large = create_graph(patterns_large)
         path_large = find_path(graph_large)
         result_large = path_to_string(path_large)
@@ -58,7 +58,7 @@ if __name__ == "__main__":
         afficher_statistiques(patterns_large, graph_large, path_large, result_large)
 
     except FileNotFoundError:
-        print("Le fichier 'extra_dataset' n'a pas été trouvé.")
+        print("Le fichier 'extra_dataset_readpairs' n'a pas été trouvé.")
 
 
 # fin :)

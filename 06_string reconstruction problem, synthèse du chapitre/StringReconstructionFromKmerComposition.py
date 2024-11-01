@@ -143,7 +143,7 @@ input1 = [
         "TTAC"
         ]
 
-input2 = read_kmers_from_file('extra_dataset')  # Assurez-vous que le fichier est dans le même dossier
+input2 = read_kmers_from_file('extra_dataset_readpairs')  # Assurez-vous que le fichier est dans le même dossier
 
 
 patterns = input2
