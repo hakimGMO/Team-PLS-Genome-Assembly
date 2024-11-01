@@ -114,7 +114,7 @@ Continuing the process, we obtain the following assembly:
 
 Yet this assembly is incorrect because we have only used fourteen of the fifteen 3-mers in the composition (we omitted GGG), making our reconstructed genome one nucleotide too short.
 
-### **Repeats complicate genome assembly**
+## <center>Repeats complicate genome assembly</center>
 The difficulty in assembling this simulated genome arises because ATG is repeated three times in the 3-mer composition, which causes us to have the three choices TGG, TGC, and TGT by which to extend ATG. Repeated substrings in the genome are not a serious problem when we have just 15 reads, but with millions of reads, repeats make it much more difficult to "look ahead" and construct the correct assembly.
 
 If you followed our discussion of finding the origin of replication in bacterial genomes, you know how unlikely it is to witness a long repeat in a randomly generated sequence of nucleotides. You also know that real genomes are anything but random. Indeed, approximately 50% of the human genome is made up of repeats, e.g., the approximately 300 nucleotide-long Alu sequence is repeated over a million times, with only a few nucleotides inserted/deleted/substituted each time. For more details, see "DETOUR: Repeats in the Human Genome" in the print companion or at Cogniterra.
@@ -127,10 +127,9 @@ STOP and Think: Design a strategy for assembling the Triazzle puzzle.
 ![alt text](images/triazzle.png)
 *Figure: Each Triazzle has only sixteen pieces but carries a warning: "It's Harder than it Looks!"*
 
-# Lesson 3.3 
-## String Reconstruction as a Walk in the Overlap Graph
+# Lesson 3.3 : String Reconstruction as a Walk in the Overlap Graph
 
-### From a string to a graph
+## <center>From a string to a graph</center>
 Repeats in a genome necessitate some way of looking ahead to see the correct assembly in advance. Returning to our above example, you may have already found that TAATGCCATGGGATGTT is a solution to the String Reconstruction Problem for the collection of fifteen 3-mers in the last section, as illustrated below. Note that we use a different color for each interval of the string between occurrences of ATG.
 
 ![alt text](image.png)
@@ -174,7 +173,7 @@ If we strictly follow the rule of connecting two 3-mers with an arrow every time
 The figure above presents an example of a graph, or a network of nodes connected by edges. This particular graph is an example of a directed graph, whose edges have a direction and are represented by arrows (as opposed to undirected graphs whose edges do not have directions). If you are unfamiliar with graphs, see "DETOUR: An Introduction to Graphs" in the print companion or at Cogniterra.
 
 
-## The genome vanishes
+## <center>The genome vanishes</center>
 ![alt text](<images/overlap_graph_easy.png>)
 
 The genome can still be traced out in the graph from the previous page (reproduced above) by following the horizontal path from TAA to GTT. But in genome sequencing, we do not know in advance how to correctly order reads. Therefore, we will arrange the 3-mers lexicographically, which produces the overlap graph shown in the figure below. The genome path has disappeared!
@@ -203,7 +202,8 @@ Input: A collection Patterns of k-mers.
 Output: The overlap graph Overlap(Patterns).!
 
 
-Two graph representations
+## <center>Two graph representations</center>
+
 If you have never worked with graphs before, you may be wondering how to represent graphs in your programs. To make a brief digression from our discussion of genome assembly, consider the graph in the figure below. We can move around this graph’s nodes without changing the graph. As a result, when we are representing a graph computationally, the only information we need to store is the pair of nodes that each edge connects.
 
 There are two standard ways of representing a graph. For a directed graph with n nodes, the n × n adjacency matrix (Ai,j) is defined by the following rule: Ai,j = 1 if a directed edge connects node i to node j, and Ai,j = 0 otherwise. Another (more memory-efficient) way of representing a graph is to use an adjacency list, for which we simply list all nodes connected to each node. See figure below.
@@ -215,13 +215,9 @@ You should now be ready to apply your knowledge to solve the Overlap Graph Probl
 
 **Code Challenge**: Solve the Overlap Graph Problem, restated below. (Solve on Cogniterra or [Rosalind](https://rosalind.info/problems/ba3c/).)
 
-
-
 - Input: A collection Patterns of k-mers.
 - Output: The overlap graph Overlap(Patterns), in the form of an adjacency list. (You may return the nodes and their edges in any order.)
-
-
-## Hamiltonian paths and universal strings
+## <center>Hamiltonian paths and universal strings</center>
 
 We now know that to solve the String Reconstruction Problem, we are looking for a path in the overlap graph that visits every node exactly once. A path in a graph visiting every node once is called a Hamiltonian path, in honor of the Irish mathematician William Hamilton. 
 
@@ -251,11 +247,11 @@ Finding a k-universal string is equivalent to solving the String Reconstruction 
 
 Instead of searching for Hamiltonian paths in huge graphs, de Bruijn developed a completely different (and somewhat non-intuitive) way of representing a k-mer composition using a graph. Later in this chapter, we will learn how he used this method to construct universal strings.
 
-Exercise Break: Construct a 4-universal string.
+## **Exercise Break**: Construct a 4-universal string.
 
 # Lesson 3.4 : Another Graph for String Reconstruction
 
-## Gluing nodes and de Bruijn graphs
+## <center>Gluing nodes and de Bruijn graphs</center>
 Let’s again represent the genome TAATGCCATGGGATGTT as a sequence of its 3-mers:
 
 TAA   AAT   ATG   TGC   GCC   CCA   CAT   ATG   TGG   GGG   GGA   GAT   ATG   TGT   GTT
@@ -317,11 +313,9 @@ If we gave you the de Bruijn graph DeBruijnk(Text) without giving you Text, coul
 Construct the de Bruijn graphs DeBruijn2(TAATGCCATGGGATGTT), DeBruijn3(TAATGCCATGGGATGTT), and DeBruijn4(TAATGCCATGGGATGTT). What do you notice?
 How does the graph DeBruijn3(TAATGCCATGGGATGTT) compare to DeBruijn3(TAATGGGATGCCATGTT)?
 
-# Lesson 3.5
+# Lesson 3.5 : Walking in the de Bruijn Graph
 
-## Walking in the de Bruijn Graph
-
-Eulerian paths
+## <center>Eulerian paths</center>
 
 Even though we have glued together nodes to form the de Bruijn graph, we have not changed its edges, and so the path from TA to TT reconstructing the genome is still hiding in DeBruijn3(TAATGCCATGGGATGTT) (see the figure below), although this path has become “tangled" after gluing. Therefore, solving the String Reconstruction Problem reduces to finding a path in the de Bruijn graph that visits every edge exactly once. Such a path is called an Eulerian Path in honor of the great mathematician Leonhard Euler (pronounced “oiler").
 
@@ -338,7 +332,7 @@ We now have an alternative way of solving the String Reconstruction Problem that
 
 STOP and Think: Can you construct DeBruijnk(Text) if you don’t know Text but you do know its k-mer composition?
 
-Another way to construct de Bruijn graphs
+## <center>Another way to construct de Bruijn graphs</center>
 The figure below represents the 3-mer composition of TAATGCCATGGGATGTT as a composition graph CompositionGraph3(TAATGCCATGGGATGTT). As with the de Bruijn graph, each 3-mer is assigned to a directed edge, with its prefix labeling the first node of the edge and its suffix labeling the second node of the edge. However, the edges of this graph are isolated, meaning that no two edges share a node.
 
 ![alt text](images/composition_graph.png)
@@ -366,16 +360,15 @@ DeBruijn(Patterns)
     return dB
     
 ```
-### Constructing de Bruijn graphs from k-mer composition
+## <center>Constructing de Bruijn graphs from k-mer composition</center>
 Constructing the de Bruijn graph by gluing identically labeled nodes will help us later when we generalize the notion of de Bruijn graph for other applications. We will now describe another useful way to construct de Bruijn graphs without gluing.
 
 Given a collection of k-mers Patterns, the nodes of DeBruijnk(Patterns) are simply all unique (k−1)-mers occurring as a prefix or suffix in Patterns. For example, say we are given the following collection of 3-mers:
+![alt text](images/seqa1.png)
 
-AAT   ATG   ATG   ATG    CAT   CCA   GAT   GCC   GGA   GGG   GTT   TAA   TGC   TGG   TGT
 
 Then the set of eleven unique 2-mers occurring as a prefix or suffix of 3-mers in this collection is as follows:
-
-AA   AT   CA   CC   GA   GC   GG   GT   TA   TG   TT
+![alt text](images/seqa2.png)
 
 For every k-mer in Patterns, we connect its prefix node to its suffix node by a directed edge in order to produce DeBruijn(Patterns). You can verify that this process produces the same de Bruijn graph that we have been working with (shown below).
 
@@ -390,7 +383,7 @@ Output: The adjacency list of the de Bruijn graph DeBruijn(Patterns).
 **Code Challenge**:Solve the de Bruijn Graph from k-mers Problem. (Solve at Cogniterra or [Rosalind](https://rosalind.info/problems/ba3e/).)
 
 
-### De Bruijn graphs versus overlap graphs
+## <center>De Bruijn graphs versus overlap graphs</center>
 We now have two ways of solving the String Reconstruction Problem. We can either find a Hamiltonian path in the overlap graph (top) or find an Eulerian path in the de Bruijn graph (bottom). Your inner voice may have already started complaining: was it really worth my time to learn two slightly different ways of solving the same problem? After all, we have only changed a single word in the statements of the Hamiltonian and Eulerian Path Problems, from finding a path visiting every node exactly once to finding a path visiting every edge exactly once.
 ![alt text](images/overlap_graph_lex.png)
 
@@ -401,9 +394,7 @@ Our guess is that you would prefer working with the de Bruijn graph, since it is
 The choice between these two graphs is the pivotal decision of this chapter. To help you make this decision, we will ask you to hop onboard our bioinformatics time machine for a field trip to the 18th Century.
 ![alt text](images/overlap_graph_lex.png)
 
-# Lesson 3.6
-
-## The Seven Bridges of Konigsberg
+# <center>Lesson 3.6 : The Seven Bridges of Konigsberg</center>
 Our destination is 1735 and the Prussian city of Königsberg. This city, which today is Kaliningrad, Russia, comprised both banks of the Pregel River as well as two river islands; seven bridges connected these four different parts of the city, as illustrated below. Königsberg’s residents enjoyed taking walks, and they asked a natural question: Is it possible to set out from my house, cross each bridge exactly once, and return home? Their question became known as the Bridges of Königsberg Problem.
 
 *Figure: A map of Königsberg, adapted from Joachim Bering’s 1613 illustration. The city was made up of four sectors represented by the blue, red, yellow, and green dots. The seven bridges connecting the different parts of the city have been highlighted to make them easier to see.*
@@ -432,8 +423,7 @@ On the other hand, it turns out that no one has ever been able to find an effici
 
 For the first two decades following the invention of DNA sequencing methods, biologists assembled genomes using overlap graphs, since they failed to recognize that the Bridges of Königsberg held the key to DNA assembly. (For more details, see "DETOUR: From Euler to Hamilton to de Bruijn" in the print companion or at Cogniterra.) Indeed, overlap graphs were used to assemble the human genome. It took bioinformaticians some time to figure out that the de Bruijn graph, first constructed to solve a completely theoretical problem, was relevant to genome assembly. Moreover, when the de Bruijn graph was brought to bioinformatics, it was considered an exotic mathematical concept with limited practical applications. Today, the de Bruijn graph has become the dominant approach for genome assembly.
 
-# Lesson 3.7
-## Euler's Theorem
+# <center>Lesson 3.7 : Euler's Theorem</center>
 
 We will now explore Euler’s method for solving the Eulerian Cycle Problem. Euler worked with undirected graphs like Königsberg, but we will consider an analogue of his algorithm for directed graphs so that his method will apply to genome assembly.
 
@@ -476,11 +466,7 @@ As we mentioned, if Cycle0 is Eulerian, we are finished. Otherwise, because Grap
 
 Leo is probably annoyed that we have asked him to travel along the exact same cycle, since as before, he will eventually get stuck at v1, the node where he started. However, now there are unused edges starting at this node, and so he can continue walking from v1, using a new edge each time. The same argument as the one that we used above implies that Leo must eventually get stuck at v1. The result of Leo’s walk is a new cycle, Cycle1 (see the figure above), that is larger than Cycle0.
 
-
-
 ![alt text](images/Leo_final_steps.png)
-
-
 
 *Figure: (Left) Starting at a new node v2 (shown in red), the ant first travels along the previously constructed Cycle1 (shown as green and blue edges). (Right) After completing the walk through Cycle1, the ant continues randomly walking through the graph and finally produces an Eulerian cycle.*
 
@@ -490,11 +476,9 @@ In the figure above, Cycle2 is Eulerian, although this is certainly not the case
 
 STOP and Think: Can you formulate and prove an analogue of Euler’s Theorem for undirected graphs?
 
-# Lesson 3.8
+# Lesson 3.8 : From Euler's Theorem to an Algorithm for Finding Eulerian Cycles
 
-## From Euler's Theorem to an Algorithm for Finding Eulerian Cycles
-
-### Constructing Eulerian cycles
+## <center>Constructing Eulerian cycles</center>
 
 The proof of Euler’s Theorem offers an example of what mathematicians call a constructive proof, which not only proves the desired result, but also provides us with a method for constructing the object we need. In short, we track Leo’s movements until he inevitably produces an Eulerian cycle in a balanced and strongly connected graph Graph, as summarized in the following pseudocode.
 
@@ -516,7 +500,7 @@ You should now be prepared to solve the Eulerian Cycle Problem for any graph. It
 - Input: The adjacency list of an Eulerian directed graph.
 - Output: An Eulerian cycle in this graph.
 
-# From Eulerian cycles to Eulerian paths
+## <center>From Eulerian cycles to Eulerian paths</center>
 We can now check if a directed graph has an Eulerian cycle, but what about an Eulerian path? Consider the de Bruijn graph on the left in the figure below, which we already know has an Eulerian path, but which does not have an Eulerian cycle because nodes TA and TT are not balanced. However, we can transform this Eulerian path into an Eulerian cycle by adding a single edge connecting TT and TA, as shown in the figure below.
 
 STOP and Think: How many unbalanced nodes does a graph with an Eulerian path have?
