@@ -290,8 +290,6 @@ Instead of searching for Hamiltonian paths in huge graphs, de Bruijn developed a
 
 Exercise Break: Construct a 4-universal string.
 
-
-
 # Lesson 3.4 : Another Graph for String Reconstruction
 
 ## Gluing nodes and de Bruijn graphs
@@ -358,4 +356,83 @@ How does the graph DeBruijn3(TAATGCCATGGGATGTT) compare to DeBruijn3(TAATGGGATGC
 
 ### https://rosalind.info/problems/ba3d/
 
+# Lesson 3.5
 
+## Walking in the de Bruijn Graph
+
+Eulerian paths
+
+Even though we have glued together nodes to form the de Bruijn graph, we have not changed its edges, and so the path from TA to TT reconstructing the genome is still hiding in DeBruijn3(TAATGCCATGGGATGTT) (see the figure below), although this path has become “tangled" after gluing. Therefore, solving the String Reconstruction Problem reduces to finding a path in the de Bruijn graph that visits every edge exactly once. Such a path is called an Eulerian Path in honor of the great mathematician Leonhard Euler (pronounced “oiler").
+
+![alt text](images/debruijn_graph_eulerian_path.png)
+
+
+Figure: The path from TA to TT spelling out the genome TAATGCCATGGGATGTT has become “tangled" in the de Bruijn graph. The numbering of the fifteen edges of the path indicates an Eulerian path reconstructing the genome.
+
+Eulerian Path Problem: Construct an Eulerian path in a graph.
+
+Input: A directed graph.
+Output: A path visiting every edge in the graph exactly once (if it exists).
+We now have an alternative way of solving the String Reconstruction Problem that amounts to finding an Eulerian path in the de Bruijn graph. But wait — to construct the de Bruijn graph of a genome, we glued together nodes of PathGraphk(Text). However, constructing this graph requires us to know the correct ordering of the k-mers in Text!
+
+STOP and Think: Can you construct DeBruijnk(Text) if you don’t know Text but you do know its k-mer composition?
+
+Another way to construct de Bruijn graphs
+The figure below represents the 3-mer composition of TAATGCCATGGGATGTT as a composition graph CompositionGraph3(TAATGCCATGGGATGTT). As with the de Bruijn graph, each 3-mer is assigned to a directed edge, with its prefix labeling the first node of the edge and its suffix labeling the second node of the edge. However, the edges of this graph are isolated, meaning that no two edges share a node.
+
+![alt text](images/composition_graph.png)
+Figure: CompositionGraph3(TAATGCCATGGGATGTT) represents the 3-mer composition of TAATGCCATGGGATGTT using an isolated directed edge for each 3-mer.
+
+STOP and Think: Glue identically labeled nodes in CompositionGraph3(TAATGCCATGGGATGTT). How does the resulting graph compare to DeBruijn3(TAATGCCATGGGATGTT)?
+
+The figure below shows how CompositionGraph3(TAATGCCATGGGATGTT) changes after gluing nodes with the same label. These operations glue the fifteen isolated edges in CompositionGraph3(TAATGCCATGGGATGTT) into a path PathGraph3(TAATGCCATGGGATGTT). Follow-up gluing operations proceed in exactly the same way as when we glued nodes of PathGraph3(TAATGCCATGGGATGTT), which results in DeBruijn3(TAATGCCATGGGATGTT). Thus, we can construct the de Bruijn graph from this genome's 3-mer composition without knowing the genome!
+
+![alt text](images/composition_gluing.png)
+For an arbitrary string Text, we define CompositionGraphk(Text) as the graph consisting of |Text|−k+1 isolated edges, where edges are labeled by k-mers in Text; every edge labeled by a k-mer edge connects nodes labeled by the prefix and suffix of this k-mer. The graph CompositionGraphk(Text) is just a collection of isolated edges representing the k-mers in the k-mer composition of Text, meaning that we can construct CompositionGraph(Text) from the k-mer composition of Text. Gluing nodes with the same label in CompositionGraphk(Text) produces DeBruijnk(Text). Thus, we can construct the de Bruijn graph of a genome without knowing the genome!
+
+STOP and Think: In the figure from the previous step, reproduced below, we identified ATG and TGC as overlapping 3-mers. In reality, since the genome is unknown, we don’t know whether this ATG is followed by TGC, TGG, or TGT. What would happen if we had identified ATG and TGG as overlapping 3-mers instead? Verify that the final result will be the same de Bruijn graph that we derived earlier.
+
+![alt text](<images/composition_gluing (1).png>)
+
+
+Given an arbitrary collection of k-mers Patterns (where some k-mers may appear multiple times), we define CompositionGraph(Patterns) as a graph with |Patterns| isolated edges. Every edge is labeled by a k-mer from Patterns, and the starting and ending nodes of an edge are labeled by the prefix and suffix of the k-mer labeling that edge. We then define DeBruijn(Patterns) by gluing identically labeled nodes in CompositionGraph(Patterns), which yields the following algorithm.
+
+DeBruijn(Patterns)
+    dB ← graph in which every k-mer in Patterns is isolated edge between its prefix and suffix
+    dB ← graph resulting from ﻿gluing all nodes in dB with identical labels
+    return dB
+### Constructing de Bruijn graphs from k-mer composition
+Constructing the de Bruijn graph by gluing identically labeled nodes will help us later when we generalize the notion of de Bruijn graph for other applications. We will now describe another useful way to construct de Bruijn graphs without gluing.
+
+Given a collection of k-mers Patterns, the nodes of DeBruijnk(Patterns) are simply all unique (k−1)-mers occurring as a prefix or suffix in Patterns. For example, say we are given the following collection of 3-mers:
+
+AAT   ATG   ATG   ATG    CAT   CCA   GAT   GCC   GGA   GGG   GTT   TAA   TGC   TGG   TGT
+
+Then the set of eleven unique 2-mers occurring as a prefix or suffix of 3-mers in this collection is as follows:
+
+AA   AT   CA   CC   GA   GC   GG   GT   TA   TG   TT
+
+For every k-mer in Patterns, we connect its prefix node to its suffix node by a directed edge in order to produce DeBruijn(Patterns). You can verify that this process produces the same de Bruijn graph that we have been working with (shown below).
+
+![alt text](images/debruijn_graph_alternate_rendering.png)
+
+Figure: The graph above is the de Bruijn graph we have been working with, although we have drawn it differently.
+
+DeBruijn Graph from k-mers Problem: Construct the de Bruijn graph from a set of k-mers.
+
+Input: A collection of k-mers Patterns.
+Output: The adjacency list of the de Bruijn graph DeBruijn(Patterns).
+Code Challenge:Solve the de Bruijn Graph from k-mers Problem. (Solve at Cogniterra or Rosalind.)
+
+## https://rosalind.info/problems/ba3e/
+
+### De Bruijn graphs versus overlap graphs
+We now have two ways of solving the String Reconstruction Problem. We can either find a Hamiltonian path in the overlap graph (top) or find an Eulerian path in the de Bruijn graph (bottom). Your inner voice may have already started complaining: was it really worth my time to learn two slightly different ways of solving the same problem? After all, we have only changed a single word in the statements of the Hamiltonian and Eulerian Path Problems, from finding a path visiting every node exactly once to finding a path visiting every edge exactly once.
+![alt text](images/overlap_graph_lex.png)
+
+STOP and Think: Which graph would you rather work with, the overlap graph or the de Bruijn graph?
+
+Our guess is that you would prefer working with the de Bruijn graph, since it is smaller. However, this would be the wrong reason to choose one graph over the other. In the case of real assembly problems, both graphs will have millions of nodes, and so all that matters is finding an efficient algorithm for reconstructing the genome. If we can find an efficient algorithm for the Hamiltonian Path Problem, but not for the Eulerian path Problem, then you should select the overlap graph even though it looks more complex.
+
+The choice between these two graphs is the pivotal decision of this chapter. To help you make this decision, we will ask you to hop onboard our bioinformatics time machine for a field trip to the 18th Century.
+![alt text](images/overlap_graph_lex.png)
