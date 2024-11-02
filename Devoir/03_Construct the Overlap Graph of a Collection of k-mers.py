@@ -23,6 +23,19 @@ def Suffix(Pattern):
     return Pattern[1:]
 
 
+def read_kmers_from_file(filename):
+    """Reads a collection of k-mers from a text file.
+
+    :param filename: The path to the file containing k-mers.
+    :return: A list of k-mers.
+    """
+    with open(filename, "r") as file:
+        # remove empty lines and add to list
+        kmers = [line.strip() for line in file if line.strip()]
+
+    return kmers
+
+
 def Overlap(Patterns):
     """Construct the overlap graph of a collection of k-mers.
 
@@ -57,8 +70,20 @@ def Overlap(Patterns):
     return adj_list
 
 
-# Test case
-test = ["ATGCG", "GCATG", "CATGC", "AGGCA", "GGCAT"]
-overlap_graph = Overlap(test)
-for k, v in overlap_graph.items():
-    print(f"{k} -> {', '.join(v)}")
+# Example usage
+filename = "Devoir/Datasets/03_dataset.txt"  # Replace with your file path
+kmers = read_kmers_from_file(filename)
+overlap_graph = Overlap(kmers)
+
+import pyperclip
+
+
+# Convert the adjacency list to a string representation
+graph_str = "\n".join(f"{k} -> {', '.join(v)}" for k, v in overlap_graph.items())
+print(graph_str)
+pyperclip.copy(graph_str)  # Copy the result to the clipboard
+
+
+# simple Test case
+# test = ["ATGCG", "GCATG", "CATGC", "AGGCA", "GGCAT"]
+# overlap_graph = Overlap(test)
