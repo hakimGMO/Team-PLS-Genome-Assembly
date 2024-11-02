@@ -69,28 +69,22 @@ def Overlap(Patterns):
     return adj_list  # return the adjacency list
 
 
-# Convert the adjacency list to a string representation
-graph_str = "\n".join(f"{k} -> {', '.join(v)}" for k, v in overlap_graph.items())
-print(graph_str)
-pyperclip.copy(graph_str)  # Copy the result to the clipboard
-
-
 def adj_list_to_string(overlap_adj_list):
     """Convert the overlap graph to a string representation.
 
-    :param overlap_graph: The overlap graph in the form of an adjacency list.
+    :param adj_list: The overlap graph in the form of an adjacency list.
     :return: A string representation of the overlap graph.
     """
     return "\n".join(f"{k} -> {', '.join(v)}" for k, v in overlap_adj_list.items())
 
 
 # Example usage
-filename = "Devoir/Datasets/03_dataset.txt"  # Replace with your file path
+filename = "Devoir/Datasets/03_dataset.txt"  #  file path
 kmers = read_kmers_from_file(filename)  # read the k-mers from the file
 adj_list = Overlap(kmers)  # Construct the overlap graph (adjacency list)
-graph_str = adj_list_to_string(
-    adj_list
-)  # Convert the adjacency list to a string representation
+graph_str = adj_list_to_string(adj_list)
+# Convert the adjacency list to a string representation
+
 print(graph_str)
 pyperclip.copy(graph_str)  # Copy the result to the clipboard
 
