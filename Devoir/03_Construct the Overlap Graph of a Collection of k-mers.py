@@ -92,3 +92,88 @@ pyperclip.copy(graph_str)  # Copy the result to the clipboard
 # simple Test case
 # test = ["ATGCG", "GCATG", "CATGC", "AGGCA", "GGCAT"]
 # overlap_graph = Overlap(test)
+
+
+import networkx as nx
+import matplotlib.pyplot as plt
+
+testseq = ["ATGCG", "GCATG", "CATGC", "AGGCA", "GGCAT"]
+
+
+def construct_overlap_network(Patterns):
+    G = nx.DiGraph()
+    """on va faire un graphe dirigé pour reconstuire un chemin entre les k-mers tels que suffixe n = préfixe n-1"""
+    G.add_nodes_from(Patterns)
+    """Construct the overlap graph of a collection of k-mers.
+
+    :param Patterns: A collection Patterns of k-mers.
+    :return: The overlap graph Overlap(Patterns), in the form of an adjacency list.
+    """
+
+    # Iterate over each k-mer in Patterns
+    for i, Pattern in enumerate(Patterns):
+        # i is the index of the current k-mer in Patterns ; Pattern is the current k-mer
+        # Iterate over each k-mer in Patterns
+        for j, Pattern_prime in enumerate(Patterns):
+            # j is the index of the current k-mer in Patterns ; Pattern_prime is the current k-mer
+            # Skip the current k-mer
+            if i == j:
+                # if the index of the current k-mer is equal to the index of the current k-mer
+                continue  # skip the current k-mer
+
+            # Check if Suffix(Pattern) is equal to Prefix(Pattern_prime)
+            if Suffix(Pattern) == Prefix(Pattern_prime):
+                G.add_edge(Pattern, Pattern_prime)
+
+    return G
+
+
+G = construct_overlap_network(testseq)
+
+# visualisation, avec pos des noeuds
+fig = plt.figure(figsize=(10, 5))  # create a figure
+pos = nx.spring_layout(G)  # positions for all nodes
+nx.draw(  # draw the graph G
+    G,
+    pos,
+    with_labels=True,
+    node_color="red",
+    node_size=1500,
+    arrowsize=50,
+    font_size=8,
+    font_weight="bold",
+)
+plt.savefig("Devoir/Images/03_fig1.png")  # save the figure
+plt.show()  # show the figure
+
+# print edges
+print("\nEdges in the graph:")
+for edge in G.edges():
+    print(f"{edge[0]} -> {edge[1]}")
+
+###other graph: too large to be displayed correctly
+""" 
+kmers = read_kmers_from_file(filename)  # read the k-mers from the file
+G = construct_overlap_network(kmers)
+
+# visualisation, avec pos des noeuds
+fig = plt.figure(figsize=(10, 5))
+pos = nx.spring_layout(G)
+nx.draw(
+    G,
+    pos,
+    with_labels=True,
+    node_color="red",
+    node_size=1500,
+    arrowsize=50,
+    font_size=8,
+    font_weight="bold",
+)
+plt.show()
+
+# You can also print edges
+print("\nEdges in the graph:")
+for edge in G.edges():
+    print(f"{edge[0]} -> {edge[1]}")
+plt.savefig("fig.png")
+"""
