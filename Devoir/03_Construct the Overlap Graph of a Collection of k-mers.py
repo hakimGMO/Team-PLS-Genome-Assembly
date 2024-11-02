@@ -2,7 +2,8 @@
 
 """In this chapter, we use the terms prefix and suffix to refer to the first k − 1 nucleotides and last k − 1 nucleotides of a k-mer, respectively.
 
-Given an arbitrary collection of k-mers Patterns, we form a graph having a node for each k-mer in Patterns and connect k-mers Pattern and Pattern' by a directed edge if Suffix(Pattern) is equal to Prefix(Pattern'). The resulting graph is called the overlap graph on these k-mers, denoted Overlap(Patterns).
+Given an arbitrary collection of k-mers Patterns, we form a graph having a node for each k-mer in Patterns and connect k-mers Pattern and Pattern' by a directed edge if Suffix(Pattern) is equal to Prefix(Pattern'). 
+The resulting graph is called the overlap graph on these k-mers, denoted Overlap(Patterns).
 
 Overlap Graph Problem
 Construct the overlap graph of a collection of k-mers.
@@ -13,8 +14,51 @@ Return: The overlap graph Overlap(Patterns), in the form of an adjacency list.""
 
 
 def Prefix(Pattern):
+    """Returns the prefix of a k-mer"""
     return Pattern[:-1]
 
 
 def Suffix(Pattern):
+    """Returns the suffix of a k-mer"""
     return Pattern[1:]
+
+
+def Overlap(Patterns):
+    """Construct the overlap graph of a collection of k-mers.
+
+    :param Patterns: A collection Patterns of k-mers.
+    :return: The overlap graph Overlap(Patterns), in the form of an adjacency list.
+    """
+    # Initialize an empty dictionary to store the adjacency list
+    adj_list = {}
+
+    # Iterate over each k-mer in Patterns
+    for i, Pattern in enumerate(
+        Patterns
+    ):  # i is the index of the current k-mer in Patterns ; Pattern is the current k-mer
+        # Iterate over each k-mer in Patterns
+        for j, Pattern_prime in enumerate(
+            Patterns
+        ):  # j is the index of the current k-mer in Patterns ; Pattern_prime is the current k-mer
+            # Skip the current k-mer
+            if (
+                i == j
+            ):  # if the index of the current k-mer is equal to the index of the current k-mer
+                continue  # skip the current k-mer
+
+            # Check if Suffix(Pattern) is equal to Prefix(Pattern_prime)
+            if Suffix(Pattern) == Prefix(Pattern_prime):
+                if Pattern not in adj_list:  # if Pattern is not in the adjacency list
+                    adj_list[Pattern] = []  # add Pattern to the adjacency list
+                adj_list[Pattern].append(
+                    Pattern_prime
+                )  # add Pattern_prime to the adjacency list of Pattern
+
+    return adj_list
+
+
+# Test case
+test = ["ATGCG", "GCATG", "CATGC", "AGGCA", "GGCAT"]
+overlap_graph = Overlap(test)
+for k, v in overlap_graph.items():
+    print(f"{k} -> {', '.join(v)}")
