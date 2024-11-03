@@ -20,30 +20,41 @@ def Suffix(Pattern):
 
 
 def CompositionGraph(Patterns):
-    """Construct the composition graph of a collection of k-mers.
-
-    :param Patterns: A collection Patterns of k-mers.
-    :return: The composition graph CompositionGraph(Patterns), in the form of an adjacency list.
     """
+    Constructs the CompositionGraph of the collection of k-mers Patterns.
+    :param Patterns: A collection of k-mers.
+    :return: The composition graph CompositionGraph(Patterns), in the form of a tuple containing (Prefixes, Suffixes).
+    """
+    # Initialize an empty list to store the edges
+    edges = []
+    for kmer in Patterns:
+        prefix = Prefix(kmer)
+        suffix = Suffix(kmer)
+        edges.append((prefix, suffix))
+    return edges
+
+
+def DeBruijn(Patterns):
+    """
+    Constructs the de Bruijn graph of a collection of k-mers Patterns.
+    :param Patterns: A collection of k-mers.
+    :return: The de Bruijn graph DeBruijn(Patterns), in the form of an adjacency list.
+    """
+    # Construct the CompositionGraph of Patterns
+    edges = CompositionGraph(Patterns)
     # Initialize an empty dictionary to store the adjacency list
     adj_list = {}
-
-    # Iterate over each k-mer in Patterns
-    for i, Pattern in enumerate(Patterns):
-        # i is the index of the current k-mer in Patterns ; Pattern is the current k-mer
-        # Add an edge labeled by Pattern to the adjacency list
-        adj_list[Pattern] = []
-
-        # Iterate over each k-mer in Patterns
-        for j, Pattern_prime in enumerate(Patterns):
-            # j is the index of the current k-mer in Patterns ; Pattern_prime is the current k-mer
-            # Skip the current k-mer
-            if i == j:
-                # if the index of the current k-mer is equal to the index of the current k-mer
-                continue  # skip the current k-mer
-
-            # Add an edge labeled by Pattern_prime to the adjacency list if Suffix(Pattern) is equal to Prefix(Pattern_prime)
-            if Suffix(Pattern) == Prefix(Pattern_prime):
-                adj_list[Pattern].append(Pattern_prime)
-
+    # Iterate over each edge in the CompositionGraph
+    for edge in edges:
+        # Unpack the edge into the prefix and suffix
+        prefix, suffix = (
+            edge  # prefix is the first element of the edge, suffix is the second element of the edge
+        )
+        # Check if the prefix is already in the adjacency list
+        if prefix in adj_list:
+            # Append the suffix to the list of neighbors
+            adj_list[prefix].append(suffix)
+        else:
+            # Initialize a new list with the suffix as the neighbor
+            adj_list[prefix] = [suffix]
     return adj_list
