@@ -230,3 +230,16 @@ print(adj_list_test_Book_k4)
 nx_debruijn(
     adj_list_test_Book_k4, graph_name="De Bruijn Graph for TAATGCCATGGGATGTT with k=4"
 )
+
+
+# other sequence from the book
+# k=3
+adj_list_test_Book_k3 = DeBruijnk(
+    "TAATGGGATGGCCATGTT", 3
+)  # generate the adjacency list with k=3
+print(adj_list_test_Book_k3)
+
+# Visualize the de Bruijn graph for the Book sequence
+nx_debruijn(
+    adj_list_test_Book_k3, graph_name="De Bruijn Graph for TAATGGGATGGCCATGTT with k=3"
+)
