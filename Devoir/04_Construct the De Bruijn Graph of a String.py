@@ -9,6 +9,8 @@ Given: An integer k and a string Text.
 
 Return:DeBruijnk(Text), in the form of an adjacency list."""
 
+import pyperclip  # to copy the result to the clipboard
+
 
 # We need to create two functions: one to generate the nodes and edges of the path graph ( PathGraphk(Text)),
 # and another to generate the adjacency list of the de Bruijn graph (DeBruijnk(Text)).
@@ -141,6 +143,5 @@ print(testseq)
 # Apply the DeBruijnk_tostring function to the test sequence
 # Output: A string representation of the de Bruijn graph.
 result = DeBruijnk_tostring(testseq["Text"], testseq["k"])
-import pyperclip
 
 pyperclip.copy(result)
