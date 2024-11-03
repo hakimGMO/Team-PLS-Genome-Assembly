@@ -66,7 +66,8 @@ def DeBruijnk(Text, k):
     adj_list = {}
 
     # Iterate over each edge in the edges list
-    for edge in edges:
+    for i in range(len(edges[1])):  # edges[1] is the list of k-mers
+        edge = edges[1][i]  # get the i-th k-mer
         # Get the prefix of the edge
         prefix = edge[: k - 1]
         # Get the suffix of the edge
@@ -76,12 +77,70 @@ def DeBruijnk(Text, k):
         if prefix not in adj_list:
             adj_list[prefix] = []
 
-        # If the suffix is not in the adjacency list for the prefix, add it
-        if suffix not in adj_list[prefix]:
-            adj_list[prefix].append(suffix)
+        # Add the suffix to the adjacency list for the prefix
+        adj_list[prefix].append(suffix)
 
     return adj_list
 
 
 # Test the DeBruijnk function
-print(DeBruijnk(text1, k1))
+result = DeBruijnk(text1, k1)
+print(result)
+
+
+def DeBruijnk_tostring(Text, k):
+    """
+    Convert the adjacency list of the de Bruijn graph to a string representation.
+
+    :param Text: A string representing the genome.
+    :param k: An integer representing the length of k-mers.
+
+    :return: A string representation of the de Bruijn graph.
+    """
+    # Generate the adjacency list using DeBruijnk function
+    adj_list = DeBruijnk(Text, k)
+
+    # Initialize an empty string to store the string representation
+    graph_string = ""
+
+    # Iterate over each key-value pair in the adjacency list
+    for key in sorted(adj_list.keys()):  # sort the keys in the adjacency list
+        # Add the key to the string
+        graph_string += key + " -> "
+        # Add the sorted values to the string
+        graph_string += ",".join(sorted(adj_list[key]))
+        # Add a newline character
+        graph_string += "\n"
+
+    return graph_string
+
+
+# Test the DeBruijnk_tostring function
+print(DeBruijnk_tostring(text1, k1))
+
+
+def read_TextandK_from_file(filename):
+    """
+    Read a sequence from a text file.
+
+    :param filename: The path to the file containing the sequence.
+    :return: A dictionary containing 'k' and 'Text'.
+    """
+    with open(filename, "r") as file:
+        lines = file.readlines()
+        k = int(lines[0].strip())  # read the first line as an integer
+        Text = lines[1].strip()  # read the second line as a string
+
+    return {"k": k, "Text": Text}
+
+
+testseq = read_TextandK_from_file("Devoir/Datasets/04_dataset.txt")
+print(testseq)
+
+
+# Apply the DeBruijnk_tostring function to the test sequence
+# Output: A string representation of the de Bruijn graph.
+result = DeBruijnk_tostring(testseq["Text"], testseq["k"])
+import pyperclip
+
+pyperclip.copy(result)
