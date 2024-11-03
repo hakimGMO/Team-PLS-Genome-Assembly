@@ -10,6 +10,8 @@ Given: An integer k and a string Text.
 Return:DeBruijnk(Text), in the form of an adjacency list."""
 
 import pyperclip  # to copy the result to the clipboard
+import networkx as nx
+import matplotlib.pyplot as plt
 
 
 # We need to create two functions: one to generate the nodes and edges of the path graph ( PathGraphk(Text)),
@@ -47,6 +49,7 @@ def PathGraphk(Text, k):
 # Test the PathGraphk function
 k1 = 4  # length of k-mers
 text1 = "AAGATTCTCTAC"  # genome Text
+
 print(PathGraphk(text1, k1))
 
 
@@ -145,3 +148,59 @@ print(testseq)
 result = DeBruijnk_tostring(testseq["Text"], testseq["k"])
 
 pyperclip.copy(result)
+
+
+# Visualize the de Bruijn graph using NetworkX and Matplotlib
+def nx_debruijn(adj_list, graph_name="De Bruijn Graph"):
+    """
+    Visualize the de Bruijn graph using NetworkX and Matplotlib.
+
+    :param adj_list: A dictionary representing the adjacency list of the de Bruijn graph.
+    :param graph_name: A string representing the name of the graph.
+    """
+    G = nx.DiGraph()  # directed graph
+    edge_labels = {}  # added later to visualize edges with labels
+
+    # Add edges to the graph
+    for node, neighbors in adj_list.items():
+        for neighbor in neighbors:
+            G.add_edge(node, neighbor)
+            edge_labels[(node, neighbor)] = node + neighbor[-1]
+
+    # Set up the plot
+    plt.figure(figsize=(10, 10), dpi=100)
+    pos = nx.circular_layout(G)
+
+    # Draw the nodes, edges, and labels
+    nx.draw_networkx_nodes(G, pos, node_color="lightblue", node_size=500, alpha=0.6)
+    nx.draw_networkx_edges(G, pos, edge_color="gray", arrowsize=15, alpha=0.4)
+    nx.draw_networkx_labels(G, pos, font_size=8)
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=6)
+
+    # Set the title and axis
+    plt.title(graph_name)
+    plt.axis("off")
+    # Save the image to the Images folder with the graph name
+    plt.savefig(f"Devoir/Images/04_{graph_name.replace(' ', '_')}.png", dpi=300)
+
+    plt.show()
+
+
+# Test the nx_debruijn function
+
+""" 
+#too many nodes to visualize
+testseq = read_TextandK_from_file("Devoir/Datasets/04_dataset.txt")
+seq_adj_list = DeBruijnk(testseq["Text"], testseq["k"])
+nx_debruijn(seq_adj_list) """
+
+# Test with a smaller sequence
+# The sequence in the Book is "TAATGCCATGGGATGTT" and k=3
+
+adj_list_test_Book = DeBruijnk("TAATGCCATGGGATGTT", 3)  # generate the adjacency list
+print(adj_list_test_Book)
+
+# Visualize the de Bruijn graph for the Book sequence
+nx_debruijn(
+    adj_list_test_Book, graph_name="De Bruijn Graph for TAATGCCATGGGATGTT with k=3"
+)
