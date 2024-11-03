@@ -53,9 +53,7 @@ def DeBruijn(Patterns):
     # Iterate over each edge in the CompositionGraph
     for edge in edges:
         # Unpack the edge into the prefix and suffix
-        prefix, suffix = (
-            edge  # prefix is the first element of the edge, suffix is the second element of the edge
-        )
+        prefix, suffix = edge
         # Check if the prefix is already in the adjacency list
         if prefix in adj_list:
             # Append the suffix to the list of neighbors
@@ -63,4 +61,10 @@ def DeBruijn(Patterns):
         else:
             # Initialize a new list with the suffix as the neighbor
             adj_list[prefix] = [suffix]
-    return adj_list
+    # Sort the adjacency list by keys (prefixes) and values (suffixes) in alphabetical order
+    sorted_adj_list = {k: sorted(v) for k, v in sorted(adj_list.items())}
+    return sorted_adj_list
+
+
+print("The De Bruijn graph of the given k-mers is:")
+pprint.pp(DeBruijn(listKmer))
