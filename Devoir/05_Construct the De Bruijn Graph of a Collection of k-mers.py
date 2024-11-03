@@ -68,3 +68,37 @@ def DeBruijn(Patterns):
 
 print("The De Bruijn graph of the given k-mers is:")
 pprint.pp(DeBruijn(listKmer))
+
+
+def adj_list_to_string(overlap_adj_list):
+    """Convert the overlap graph to a string representation.
+
+    :param adj_list: The overlap graph in the form of an adjacency list.
+    :return: A string representation of the overlap graph.
+    """
+    return "\n".join(f"{k} -> {', '.join(v)}" for k, v in overlap_adj_list.items())
+
+
+def read_kmers_from_file(filename):
+    """Reads a collection of k-mers from a text file.
+
+    :param filename: The path to the file containing k-mers.
+    :return: A list of k-mers.
+    """
+    with open(filename, "r") as file:
+        # remove empty lines and add to list
+        kmers = [line.strip() for line in file if line.strip()]
+
+    return kmers
+
+
+# Example usage
+filename = "Devoir/Datasets/05_dataset.txt"  #  file path
+kmers = read_kmers_from_file(filename)  # read the k-mers from the file
+adj_list = DeBruijn(kmers)  # Construct the overlap graph (adjacency list)
+graph_str = adj_list_to_string(adj_list)
+# Convert the adjacency list to a string representation
+
+print(graph_str)
+pyperclip.copy(graph_str)  # Copy the result to the clipboard
+# Check the result on Rosalind : https://rosalind.info/problems/ba3e/
