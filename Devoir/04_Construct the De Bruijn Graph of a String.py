@@ -195,12 +195,38 @@ seq_adj_list = DeBruijnk(testseq["Text"], testseq["k"])
 nx_debruijn(seq_adj_list) """
 
 # Test with a smaller sequence
-# The sequence in the Book is "TAATGCCATGGGATGTT" and k=3
+# The sequence in the Book is "TAATGCCATGGGATGTT"
 
-adj_list_test_Book = DeBruijnk("TAATGCCATGGGATGTT", 3)  # generate the adjacency list
-print(adj_list_test_Book)
+# k=2
+adj_list_test_Book_k2 = DeBruijnk(
+    "TAATGCCATGGGATGTT", 2
+)  # generate the adjacency list with k=2
+print(adj_list_test_Book_k2)
 
 # Visualize the de Bruijn graph for the Book sequence
 nx_debruijn(
-    adj_list_test_Book, graph_name="De Bruijn Graph for TAATGCCATGGGATGTT with k=3"
+    adj_list_test_Book_k2, graph_name="De Bruijn Graph for TAATGCCATGGGATGTT with k=2"
+)
+
+
+# k=3
+adj_list_test_Book_k3 = DeBruijnk(
+    "TAATGCCATGGGATGTT", 3
+)  # generate the adjacency list with k=3
+print(adj_list_test_Book_k3)
+
+# Visualize the de Bruijn graph for the Book sequence
+nx_debruijn(
+    adj_list_test_Book_k3, graph_name="De Bruijn Graph for TAATGCCATGGGATGTT with k=3"
+)
+
+# k=4
+adj_list_test_Book_k4 = DeBruijnk(
+    "TAATGCCATGGGATGTT", 4
+)  # generate the adjacency list with k=4
+print(adj_list_test_Book_k4)
+
+# Visualize the de Bruijn graph for the Book sequence
+nx_debruijn(
+    adj_list_test_Book_k4, graph_name="De Bruijn Graph for TAATGCCATGGGATGTT with k=4"
 )
