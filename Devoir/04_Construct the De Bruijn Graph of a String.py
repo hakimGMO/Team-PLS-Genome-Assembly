@@ -42,6 +42,12 @@ def PathGraphk(Text, k):
     return nodes, edges
 
 
+# Test the PathGraphk function
+k1 = 4  # length of k-mers
+text1 = "AAGATTCTCTAC"  # genome Text
+print(PathGraphk(text1, k1))
+
+
 def DeBruijnk(Text, k):
     """
     Generate the adjacency list of the de Bruijn graph from a genome Text.
@@ -53,8 +59,8 @@ def DeBruijnk(Text, k):
 
     :return: A dictionary representing the adjacency list of the de Bruijn graph.
     """
-    # Generate the nodes and edges of the path graph
-    nodes, edges = PathGraphk(Text, k)
+    # Generate the nodes and edges of the path graph nodes,
+    edges = PathGraphk(Text, k)
 
     # Initialize an empty dictionary to store the adjacency list
     adj_list = {}
@@ -75,3 +81,7 @@ def DeBruijnk(Text, k):
             adj_list[prefix].append(suffix)
 
     return adj_list
+
+
+# Test the DeBruijnk function
+print(DeBruijnk(text1, k1))
