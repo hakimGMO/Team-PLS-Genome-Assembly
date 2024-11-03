@@ -6,6 +6,7 @@ Every edge is labeled by a k-mer from Patterns, and the starting and ending node
 We then define the de Bruijn graph of Patterns, denoted DeBruijn(Patterns), by gluing identically labeled nodes in CompositionGraph(Patterns), which yields the following algorithm."""
 
 
+import pprint  # to pretty print the output
 import pyperclip  # to copy the result to the clipboard
 
 
@@ -32,6 +33,11 @@ def CompositionGraph(Patterns):
         suffix = Suffix(kmer)
         edges.append((prefix, suffix))
     return edges
+
+
+# Test the CompositionGraph function
+listKmer = ["GAGG", "CAGG", "GGGG", "GGGA", "CAGG", "AGGG", "GGAG"]
+pprint.pp(CompositionGraph(listKmer))
 
 
 def DeBruijn(Patterns):
