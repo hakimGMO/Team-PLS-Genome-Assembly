@@ -81,36 +81,64 @@ def EulerianPath(Graph):
 
     def find_start_node(Graph):
         """Find the starting node for the Eulerian path."""
-        in_degrees = {node: 0 for node in Graph}
-        out_degrees = {node: len(neighbors) for node, neighbors in Graph.items()}
+        # Initialize dictionaries for counting in-degrees and out-degrees of each node.
+        in_degrees = {
+            node: 0 for node in Graph
+        }  # Initialize in-degrees to 0 for all nodes.
+        out_degrees = {
+            node: len(neighbors) for node, neighbors in Graph.items()
+        }  # Initialize out-degrees for each node.
 
-        for neighbors in Graph.values():
-            for neighbor in neighbors:
-                if neighbor not in in_degrees:
-                    in_degrees[neighbor] = 0
-                in_degrees[neighbor] += 1
+        # Calculate in-degrees for each node by iterating through each neighbor in the adjacency list.
+        for (
+            neighbors
+        ) in Graph.values():  # Iterate through the adjacency list of each node.
+            for neighbor in neighbors:  # Iterate through the neighbors of the node.
+                if (
+                    neighbor not in in_degrees
+                ):  # If the neighbor is not in the in-degrees dictionary, add it.
+                    in_degrees[neighbor] = 0  # Initialize the in-degree to 0.
+                in_degrees[neighbor] += 1  # Increment the in-degree of the neighbor.
 
+        # Initialize start_node as None (default value if no start node is found).
         start_node = None
-        for node in Graph:
-            if out_degrees[node] - in_degrees[node] == 1:
-                start_node = node
-                break
-            elif out_degrees[node] > 0:
-                start_node = node
 
-        return start_node
+        # Determine the start node by checking degree imbalances (out-degree - in-degree).
+        for node in Graph:  # Iterate through each node in the graph.
+            # If a node has one more outgoing edge than incoming, it's the start of the path.
+            if (
+                out_degrees[node] - in_degrees[node] == 1
+            ):  # If the degree imbalance is 1.
+                start_node = node  # Set the start node to the current node.
+                break  # Exit the loop.
+            # Otherwise, choose any node with an outgoing edge as the start node.
+            elif out_degrees[node] > 0:  # If the node has outgoing edges.
+                start_node = node  # Set the start node to the current node.
 
+        return start_node  # Return the start node for the Eulerian path.
+
+    # Initialize the stack with the starting node found by find_start_node.
     stack = [find_start_node(Graph)]
+
+    # Initialize an empty list to hold the Eulerian path.
     path = []
 
+    # While there are still nodes in the stack to process:
     while stack:
+        # Look at the last node in the stack (current node).
         node = stack[-1]
-        if node in Graph and Graph[node]:
-            stack.append(Graph[node].pop())
-        else:
-            path.append(stack.pop())
 
-    return "->".join(map(str, reversed(path)))
+        # If the current node has any outgoing edges:
+        if node in Graph and Graph[node]:
+            # Remove the edge from the adjacency list and add it to the stack.
+            stack.append(Graph[node].pop())
+
+        else:
+            path.append(
+                stack.pop()
+            )  # Remove the last node from the stack and add it to the path.
+
+    return "->".join(map(str, reversed(path)))  # Return the Eulerian path as a string.
 
 
 # Example of usage with the short Rosalind example
@@ -121,18 +149,19 @@ pprint.pp(EulerianPath(test_adj_list))
 
 
 def EulerianPathfromfile(filename):
-    """Find an Eulerian cycle in a graph.
+    """Find an Eulerian Path in a graph.
     :param filename: The path to the file containing the adjacency list of the graph.
-    :return: An Eulerian cycle in this graph.
+    :return: Eulerian Path of this graph.
     """
     # Create the adjacency list of the graph
     graph = create_adjacency_list(filename)
     # Find the Eulerian cycle
-    cycle = EulerianPath(graph)
-    return cycle
+    Path = EulerianPath(graph)
+    return Path
 
 
 # Test with the Rosalind dataset
-adj_list = create_adjacency_list("Devoir/Datasets/07_datasetbis.txt")
-cycle = Eulerian(adj_list)
-# pyperclip.copy(cycle)  # Copy the result to the clipboard
+pyperclip.copy(
+    EulerianPathfromfile("Devoir/Datasets/07_dataset.txt")
+)  # Copy the result to the clipboard
+pprint.pp(EulerianPathfromfile("Devoir/Datasets/07_dataset.txt"))
