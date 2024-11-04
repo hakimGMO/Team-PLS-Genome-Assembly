@@ -18,17 +18,32 @@ We can therefore summarize this solution using the following pseudocode, which r
         Text ← PathToGenome(path)
         return Text"""
 
-from script03 import read_kmers_from_file, adj_list_to_string
 from script05 import DeBruijn
 from script07 import EulerianPath
 from script02 import genome_path_string
 
 
 def StringReconstruction(filename):
-    filename = "Devoir/Datasets/05_dataset.txt"  #  file path
-    kmers = read_kmers_from_file(filename)  # read the k-mers from the file
-    adj_list = DeBruijn(kmers)  # Construct the overlap graph (adjacency list)
-    Patterns = adj_list_to_string(adj_list)
+    """Reconstruct a string from its k-mer composition."""
+
+    def read_TextandK_from_file(filename):
+        """
+        Read a sequence from a text file.
+
+        :param filename: The path to the file containing the sequence.
+        :return: A dictionary containing 'k' and 'Text'.
+        """
+        with open(filename, "r") as file:
+            lines = file.readlines()
+            k = int(lines[0].strip())  # read the first line as an integer
+            Text = lines[1].strip()  # read the second line as a string
+
+        return {"k": k, "Text": Text}
+
+    data = read_TextandK_from_file(filename)
+    k = data["k"]
+    Text = data["Text"]
+    Patterns = [Text[i : i + k] for i in range(len(Text) - k + 1)]
     # construct the de Bruijn graph
     dB = DeBruijn(Patterns)
     # find an Eulerian path in the de Bruijn graph
