@@ -69,9 +69,9 @@ def create_adjacency_list(filename):
 
     for edge in edges_list:
         # Parse each line to extract the node and its connections
-        node, neighbors = edge.split(" -> ")
-        node = int(node)
-        neighbors = list(map(int, neighbors.split(","))) if neighbors else []
+        node, neighbors = edge.split(" -> ")  # split the edge into node and neighbors
+        # convert the neighbors to a list
+        neighbors = neighbors.split(",") if neighbors else []
 
         # Assign the neighbors to the adjacency list
         adjacency_list[node] = neighbors
@@ -79,8 +79,61 @@ def create_adjacency_list(filename):
     return adjacency_list
 
 
-# Example of usage
-pprint.pp(create_adjacency_list(("Devoir/Datasets/06_dataset.txt")))
+# Example of usage :
+# pprint.pp(create_adjacency_list(("Devoir/Datasets/06_dataset.txt")))
 
 
-# def EulerianCycle(Graph):
+def EulerianCycle(Graph):
+    """Find an Eulerian cycle in a graph.
+    :param Graph: An Eulerian directed graph, in the form of an adjacency list.
+    :return: An Eulerian cycle in this graph.
+
+    form a cycle Cycle by randomly walking in Graph (don't visit the same edge twice!)
+        while there are unexplored edges in Graph
+            select a node newStart in Cycle with still unexplored edges
+            form Cycle’ by traversing Cycle (starting at newStart) and then randomly walking
+            Cycle ← Cycle’
+        return Cycle
+    """
+    # Initialize an empty list to store the Eulerian cycle
+    Cycle = []
+    # Select a random node to start the cycle
+    start_node = next(iter(Graph))
+    Cycle.append(start_node)
+    # Initialize a list to store the current cycle
+    current_cycle = [start_node]
+
+    while current_cycle:
+        current_node = current_cycle[-1]
+        # Check if the current node has unexplored edges
+        if current_node in Graph and Graph[current_node]:
+            # Choose a random neighbor of the current node
+            neighbor = Graph[current_node].pop()
+            current_cycle.append(neighbor)
+            Cycle.append(neighbor)
+        else:
+            # Backtrack to find the unexplored edges
+            for i in range(len(Cycle)):
+                if Cycle[i] in Graph and Graph[Cycle[i]]:
+                    current_cycle = current_cycle[: i + 1]
+                    break
+
+    return Cycle
+
+
+# Example of usage with the short Rosalind example
+test_adj_list = {
+    "0": ["3"],
+    "1": ["0"],
+    "2": ["1", "6"],
+    "3": ["2"],
+    "4": ["2"],
+    "5": ["4"],
+    "6": ["5", "8"],
+    "7": ["9"],
+    "8": ["7"],
+    "9": ["6"],
+}
+
+# Example of usage with the short Rosalind example
+print(EulerianCycle(test_adj_list))
