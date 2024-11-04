@@ -1,16 +1,29 @@
-import matplotlib.pyplot as plt
-import networkx as nx
+import matplotlib.pyplot as plt  # Importing matplotlib library
+import networkx as nx  # Importing networkx library
 
-# plus simple bia Nx
+# Other option: via networkx
+# We use the networkx library to find the Eulerian cycle in a directed graph.
+# plus simple via Nx
 
+# Example
 input1 = {
-    0: [3], 1: [0], 2: [1, 6], 3: [2], 4: [2],
-    5: [4], 6: [5, 8], 7: [9], 8: [7], 9: [6]
+    0: [3],
+    1: [0],
+    2: [1, 6],
+    3: [2],
+    4: [2],
+    5: [4],
+    6: [5, 8],
+    7: [9],
+    8: [7],
+    9: [6],
 }
 
 graphe = input1
 
+
 def cycle_eulerien(graphe):
+    """Trouve un cycle eulérien dans un graphe."""
     G = nx.DiGraph(graphe)
     # cycle eulérien via eulerian_circuit de Nx
     cycle = list(nx.eulerian_circuit(G))
@@ -21,16 +34,18 @@ def cycle_eulerien(graphe):
     return chemin
 
 
-
+# Exemple
 cycle = cycle_eulerien(graphe)
-print('->'.join(str(x) for x in cycle))
+print("->".join(str(x) for x in cycle))
 
 
 # Option: visualiser le graphe
 def visualiser_graphe(graphe):
     pos = nx.circular_layout(graphe)
     G = nx.DiGraph(graphe)
-    nx.draw(G, pos, with_labels=True, node_color='lightblue', node_size=500, arrowsize=20)
+    nx.draw(
+        G, pos, with_labels=True, node_color="lightblue", node_size=500, arrowsize=20
+    )
     # plt.show()
     # plt.savefig('EulerianCycle_Nx.png')
     print("This graph is eulerian: ", nx.is_eulerian(G))
