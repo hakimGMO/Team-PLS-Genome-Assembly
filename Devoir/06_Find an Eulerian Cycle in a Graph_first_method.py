@@ -1,3 +1,5 @@
+# First method to solve the problem
+
 # Find an Eulerian Cycle in a Graph
 """A cycle that traverses each edge of a graph exactly once is called an Eulerian cycle, 
 and we say that a graph containing such a cycle is Eulerian.
@@ -86,30 +88,37 @@ def create_adjacency_list(filename):
 # pprint.pp(create_adjacency_list(("Devoir/Datasets/06_dataset.txt")))
 
 
-# Find an Eulerian Cycle in a given graph
-#
-# Graph has to be strongly connected and balanced.
-#
-# @param graph:  A dict of lists, sources are dict keys, targets are in the lists
+# Eulerian Cycle
+
+
 ##
 def EulerianCycle(Graph):
-    # init cycle with any node
+    """
+    Finds an Eulerian cycle in a graph.
+    :param Graph: An Eulerian directed graph, in the form of an adjacency list.
+    :return: A list representing an Eulerian cycle in this graph.
+    """
+    # Initialize the cycle with any node from the graph. Here, we choose the first node in the keys of the adjacency list
     cycle = [list(Graph.keys())[0]]
-    # run until all edges are moved from graph to cycle
+    # Main loop that continues as long as there are edges in the graph to add to the cycle.
     while len(Graph) > 0:
-        # whenever cycle closes rotate to a node with remaining targets
+        # When the current cycle is "closed" (the first and last nodes are the same),
+        # check if this cycle contains a node with any unexplored edges.
         if cycle[0] == cycle[-1]:
+            # As long as the first node of the cycle has no unexplored edges, rotate the cycle.
+            # This means removing the first element of the cycle and appending it at the end.
             while cycle[0] not in Graph:
-                cycle.pop(0)
+                cycle.pop(0)  # Remove the first node from the cycle.
                 cycle.append(cycle[0])
-        # the last node of cycle is the new source
+                # Append this node at the end to "rotate" the cycle.
+        # The last node of the current cycle becomes the new "starting point" or source to continue the traversal.
         source = cycle[-1]
-        # move one target at a time from graph to the end of cycle
+        # Take one of the neighbors (or targets) of the current node in the graph (chosen randomly) and add it to the cycle.
         cycle.append(Graph[source].pop())
-        # clean up empty dict entries of graph
-        if len(Graph[source]) == 0:
-            del Graph[source]
-    return "->".join(cycle)
+        # If the source node has no more neighbors (all its edges have been traversed), remove it from the graph. (clean up empty dict entries of graph)
+        if len(Graph[source]) == 0:  # If the node has no more neighbors
+            del Graph[source]  # delete the node from the graph
+    return "->".join(cycle)  # Return the Eulerian cycle as a string
 
 
 # Example of usage with the shor~t Rosalind example
