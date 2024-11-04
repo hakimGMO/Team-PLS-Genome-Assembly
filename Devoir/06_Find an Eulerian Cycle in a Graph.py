@@ -21,8 +21,11 @@ Return: An Eulerian cycle in this graph."""
 # Beƒore we need to be able to read a file with the edges of the graph and create a dictionary to store the adjacency list of the graph.
 # create a dictionary to store the adjacency list of the graph.
 
-
-import pprint
+# Useful functions
+import pprint  # pretty print
+import random  # random choice
+from copy import deepcopy  # deep copy of the graph
+import pyperclip
 
 
 def read_edges_from_file(filename):
@@ -81,47 +84,49 @@ def create_adjacency_list(filename):
 
 # Example of usage :
 # pprint.pp(create_adjacency_list(("Devoir/Datasets/06_dataset.txt")))
-
-
 def EulerianCycle(Graph):
-    """Find an Eulerian cycle in a graph.
-    :param Graph: An Eulerian directed graph, in the form of an adjacency list.
-    :return: An Eulerian cycle in this graph.
-
-    form a cycle Cycle by randomly walking in Graph (don't visit the same edge twice!)
-        while there are unexplored edges in Graph
-            select a node newStart in Cycle with still unexplored edges
-            form Cycle’ by traversing Cycle (starting at newStart) and then randomly walking
-            Cycle ← Cycle’
-        return Cycle
     """
-    # Initialize an empty list to store the Eulerian cycle
-    Cycle = []
-    # Select a random node to start the cycle
-    start_node = next(iter(Graph))
-    Cycle.append(start_node)
-    # Initialize a list to store the current cycle
-    current_cycle = [start_node]
+    Finds an Eulerian cycle in a graph.
+    :param Graph: An Eulerian directed graph, in the form of an adjacency list.
+    :return: A list representing an Eulerian cycle in this graph.
+    """
+    # Copy of the remaining edges in a dictionary using deepcopy
+    remaining_edges = deepcopy(Graph)
 
-    while current_cycle:
-        current_node = current_cycle[-1]
-        # Check if the current node has unexplored edges
-        if current_node in Graph and Graph[current_node]:
-            # Choose a random neighbor of the current node
-            neighbor = Graph[current_node].pop()
-            current_cycle.append(neighbor)
-            Cycle.append(neighbor)
-        else:
-            # Backtrack to find the unexplored edges
-            for i in range(len(Cycle)):
-                if Cycle[i] in Graph and Graph[Cycle[i]]:
-                    current_cycle = current_cycle[: i + 1]
-                    break
+    # Check if there are remaining edges to visit
+    def has_remaining_edges():
+        return any(remaining_edges[node] for node in remaining_edges)
 
-    return Cycle
+    # Perform a random walk starting from a given node
+    def random_walk(start):
+        path = [start]
+        current_node = start
+        while remaining_edges[current_node]:
+            next_node = random.choice(remaining_edges[current_node])
+            remaining_edges[current_node].remove(next_node)
+            current_node = next_node
+            path.append(current_node)
+        return path
+
+    # Choose a starting node that has neighbors
+    possible_start_nodes = [node for node in Graph if Graph[node]]
+    start_node = random.choice(possible_start_nodes)
+
+    # Initial cycle
+    cycle = random_walk(start_node)
+    while has_remaining_edges():
+        for pos, node in enumerate(cycle):
+            if remaining_edges[node]:  # If we find a node with remaining edges
+                # Start a new cycle from this node and perform a random walk
+                new_cycle = cycle[pos:] + cycle[1 : pos + 1]
+                cycle_extension = random_walk(node)[1:]
+                cycle = new_cycle + cycle_extension
+                break
+
+    return "->".join(cycle)
 
 
-# Example of usage with the short Rosalind example
+# Example of usage with the shor~t Rosalind example
 test_adj_list = {
     "0": ["3"],
     "1": ["0"],
@@ -136,4 +141,22 @@ test_adj_list = {
 }
 
 # Example of usage with the short Rosalind example
-print(EulerianCycle(test_adj_list))
+pprint.pp(EulerianCycle(test_adj_list))
+
+
+def EulerianCyclefromfile(filename):
+    """Find an Eulerian cycle in a graph.
+    :param filename: The path to the file containing the adjacency list of the graph.
+    :return: An Eulerian cycle in this graph.
+    """
+    # Create the adjacency list of the graph
+    graph = create_adjacency_list(filename)
+    # Find the Eulerian cycle
+    cycle = EulerianCycle(graph)
+    return cycle
+
+
+# Test with the Rosalind dataset
+pyperclip.copy(
+    EulerianCyclefromfile("Devoir/Datasets/06_dataset.txt")
+)  # Copy the result to the clipboard
