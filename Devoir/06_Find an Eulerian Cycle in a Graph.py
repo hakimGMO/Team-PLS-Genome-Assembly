@@ -22,6 +22,9 @@ Return: An Eulerian cycle in this graph."""
 # create a dictionary to store the adjacency list of the graph.
 
 
+import pprint
+
+
 def read_edges_from_file(filename):
     """Reads a collection of edges from a text file.
         :param filename: The path to the file containing edges.
@@ -50,7 +53,18 @@ def read_edges_from_file(filename):
     return edges_list
 
 
-def create_adjacency_list(edges_list):
+# Example of usage
+# print(read_edges_from_file("Devoir/Datasets/06_dataset.txt"))
+
+
+# create a dictionary to store the adjacency list of the graph.
+def create_adjacency_list(filename):
+    """Creates an adjacency list from a list of edges.
+    :param filename: The path to the file containing edges.
+    :return: A dictionary representing the adjacency list of the graph.
+    """
+    # read the edges from the file and convert to a list
+    edges_list = read_edges_from_file(filename)
     adjacency_list = {}
 
     for edge in edges_list:
@@ -63,6 +77,10 @@ def create_adjacency_list(edges_list):
         adjacency_list[node] = neighbors
 
     return adjacency_list
+
+
+# Example of usage
+pprint.pp(create_adjacency_list(("Devoir/Datasets/06_dataset.txt")))
 
 
 # def EulerianCycle(Graph):
