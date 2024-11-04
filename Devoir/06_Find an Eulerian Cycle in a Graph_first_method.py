@@ -20,14 +20,13 @@ Given: An Eulerian directed graph, in the form of an adjacency list.
 
 Return: An Eulerian cycle in this graph."""
 
-# Beƒore we need to be able to read a file with the edges of the graph and create a dictionary to store the adjacency list of the graph.
-# create a dictionary to store the adjacency list of the graph.
-
 # Useful functions
 import pprint  # pretty print
-import random  # random choice
-from copy import deepcopy  # deep copy of the graph
+
 import pyperclip
+
+# Beƒore we need to be able to read a file with the edges of the graph and create a dictionary to store the adjacency list of the graph.
+# create a dictionary to store the adjacency list of the graph.
 
 
 def read_edges_from_file(filename):
@@ -152,6 +151,6 @@ def EulerianCyclefromfile(filename):
 
 
 # Test with the Rosalind dataset
-adj_list = create_adjacency_list("Devoir/Datasets/06_datasetbis.txt")
-cycle = EulerianCycle(adj_list)
-pyperclip.copy(cycle)  # Copy the result to the clipboard
+pyperclip.copy(
+    EulerianCyclefromfile("Devoir/Datasets/06_dataset.txt")
+)  # Copy the result to the clipboard

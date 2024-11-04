@@ -158,5 +158,5 @@ def EulerianCyclefromfile(filename):
 
 # Test with the Rosalind dataset
 pyperclip.copy(
-    EulerianCyclefromfile("Devoir/Datasets/06_dataset.txt")
+    EulerianCyclefromfile("Devoir/Datasets/06_datasetbis.txt")
 )  # Copy the result to the clipboard
