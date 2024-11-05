@@ -19,6 +19,7 @@ We can therefore summarize this solution using the following pseudocode, which r
         return Text"""
 
 import pprint
+import pyperclip
 
 
 def read_kmers_from_file(filename):
@@ -34,7 +35,7 @@ def read_kmers_from_file(filename):
     return kmers
 
 
-pprint.pp(read_kmers_from_file("Devoir/Datasets/08_dataset.txt"))
+# pprint.pp(read_kmers_from_file("Devoir/Datasets/08_dataset.txt"))
 
 # script 5
 
@@ -159,7 +160,7 @@ def EulerianPath(Graph):
                 stack.pop()
             )  # Remove the last node from the stack and add it to the path.
 
-    return "->".join(map(str, reversed(path)))  # Return the Eulerian path as a string.
+    return list(reversed(path))  # Return the Eulerian path as a list.
 
 
 ### script 2
@@ -179,6 +180,7 @@ def PathToGenome(kmers):
     return genome_string
 
 
+# Fonction finale
 def StringReconstruction(filename):
     Patterns = read_kmers_from_file(filename)  # read the k-mers from the file
     dB = DeBruijn(Patterns)  # construct the de Bruijn graph
@@ -187,4 +189,11 @@ def StringReconstruction(filename):
     return Text
 
 
-pprint.pp(StringReconstruction("Devoir/Datasets/08_dataset.txt"))
+##Results
+sequence_output = StringReconstruction(
+    "/Users/valentingoupille/Documents/GitHub/Team-PLS-Genome-Assembly-1/Devoir/Datasets/08_dataset_validation.txt"
+)
+# print("The result has been copied to the clipboard.")
+pprint.pp(sequence_output)
+pyperclip.copy(sequence_output)
+# Verify the result with Rosalind
